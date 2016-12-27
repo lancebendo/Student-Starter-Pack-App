@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Student Starter Pack");
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         pagerAdapter = new PagerAdapterClass(getSupportFragmentManager());

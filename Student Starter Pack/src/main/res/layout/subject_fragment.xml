@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:text="Submit Subject"
+        android:layout_width="165dp"
+        android:layout_height="59dp"
+        android:layout_x="115dp"
+        android:layout_y="436dp"
+        android:id="@+id/btnSubmitAdd" />
+</AbsoluteLayout>
