@@ -1,13 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="No. of Units"
+        android:ems="10"
+        android:layout_x="15dp"
+        android:layout_y="89dp"
+        android:id="@+id/etSubjUnits"
+        android:textColor="?android:attr/textColorSecondary" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Subject Name"
+        android:ems="10"
+        android:layout_x="12dp"
+        android:layout_y="23dp"
+        android:id="@+id/etSubjName"
+        android:textColor="?android:attr/textColorSecondary" />
+
+    <Button
+        android:text="Start Time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="22dp"
+        android:layout_y="157dp"
+        android:id="@+id/btnStartTime" />
+
+    <Button
+        android:text="End Time"
+        android:layout_width="106dp"
+        android:layout_height="wrap_content"
+        android:layout_x="21dp"
+        android:layout_y="228dp"
+        android:id="@+id/btnEndTime" />
+
+    <EditText
+        android:layout_width="106dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_x="134dp"
+        android:layout_y="160dp"
+        android:id="@+id/etStart"
+        android:text="start time"
+        android:editable="false"
+        android:clickable="false"
+        android:cursorVisible="true"
+        android:focusable="false"/>
+
+    <EditText
+        android:layout_width="104dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_x="138dp"
+        android:layout_y="233dp"
+        android:id="@+id/etEnd"
+        android:text="end time"
+        android:editable="false"
+        android:clickable="false"
+        android:cursorVisible="true"
+        android:focusable="false" />
 
     <Button
         android:text="Submit Subject"
         android:layout_width="165dp"
         android:layout_height="59dp"
-        android:layout_x="115dp"
-        android:layout_y="436dp"
+        android:layout_x="75dp"
+        android:layout_y="443dp"
         android:id="@+id/btnSubmitAdd" />
+
+    <CheckBox
+        android:text="Monday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="27dp"
+        android:layout_y="294dp"
+        android:id="@+id/cbMonday" />
+
+    <CheckBox
+        android:text="Tuesday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="28dp"
+        android:layout_y="337dp"
+        android:id="@+id/cbTuesday" />
+
+    <CheckBox
+        android:text="Wednesday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="28dp"
+        android:layout_y="381dp"
+        android:id="@+id/cbWednesday" />
+
+    <CheckBox
+        android:text="Thurday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="139dp"
+        android:layout_y="293dp"
+        android:id="@+id/cbThursday" />
+
+    <CheckBox
+        android:text="Friday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="141dp"
+        android:layout_y="337dp"
+        android:id="@+id/cbFriday" />
+
+    <CheckBox
+        android:text="Saturday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="142dp"
+        android:layout_y="380dp"
+        android:id="@+id/cbSaturday" />
+
 </AbsoluteLayout>

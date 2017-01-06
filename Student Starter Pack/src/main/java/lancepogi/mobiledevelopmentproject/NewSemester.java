@@ -1,6 +1,7 @@
 package lancepogi.mobiledevelopmentproject;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ public class NewSemester extends AppCompatActivity {
 
     android.app.FragmentManager fm = getFragmentManager();
 
+    private int etColor;
 
     EditText etName, etYear1, etYear2;
 
@@ -26,15 +28,18 @@ public class NewSemester extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("New Semester");
+
         etName = (EditText) findViewById(R.id.etName);
         etYear1 = (EditText) findViewById(R.id.etYear1);
         etYear2 = (EditText) findViewById(R.id.etYear2);
+        etColor = etName.getCurrentTextColor();
 
         etName.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
                 if(etName.getText().toString().equals("Enter your Name")) {
+                    etName.setTextColor(Color.BLACK);
                     etName.setText("");
                 }
                 else {
@@ -49,6 +54,7 @@ public class NewSemester extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus == false) {
                     if(etName.getText().toString().equals("")) {
+                        etName.setTextColor(etColor);
                         etName.setText("Enter your Name");
                     } else {
                     }
@@ -61,6 +67,7 @@ public class NewSemester extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (etYear1.getText().toString().equals("20xx")) {
+                    etYear1.setTextColor(Color.BLACK);
                     etYear1.setText("");
                 } else {
                     etYear1.setText(etYear1.getText());
@@ -75,6 +82,7 @@ public class NewSemester extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus == false) {
                     if(etYear1.getText().toString().equals("")) {
+                        etYear1.setTextColor(etColor);
                         etYear1.setText("20xx");
                     } else {
 
@@ -89,6 +97,7 @@ public class NewSemester extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (etYear2.getText().toString().equals("20xx")) {
+                    etYear2.setTextColor(Color.BLACK);
                     etYear2.setText("");
                 } else {
                     etYear2.setText(etYear2.getText());
@@ -103,6 +112,7 @@ public class NewSemester extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if(hasFocus == false) {
                     if(etYear2.getText().toString().equals("")) {
+                        etYear2.setTextColor(etColor);
                         etYear2.setText("20xx");
                     } else {
 
@@ -121,7 +131,6 @@ public class NewSemester extends AppCompatActivity {
     public void newSubject(View view) {
         FragmentNewSubject newSubject = new FragmentNewSubject();
         newSubject.show(fm, "New Subject");
-
     }
 
 

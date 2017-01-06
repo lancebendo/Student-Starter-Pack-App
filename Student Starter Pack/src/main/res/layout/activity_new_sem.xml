@@ -53,7 +53,8 @@
         android:layout_y="120dp"
         android:textColorLink="?attr/actionModeSplitBackground"
 
-        android:focusableInTouchMode="true"/>
+        android:focusableInTouchMode="true"
+        android:textAllCaps="false" />
 
     <TextView
         android:text="School Year:"
@@ -91,7 +92,8 @@
         android:layout_alignStart="@+id/tvSemester"
         android:textColor="@android:color/black"
         android:layout_x="96dp"
-        android:layout_y="222dp" />
+        android:layout_y="222dp"
+        />
 
     <EditText
         android:layout_width="54dp"
@@ -138,7 +140,8 @@
         android:layout_width="310dp"
         android:layout_height="175dp"
         android:layout_x="32dp"
-        android:layout_y="331dp" />
+        android:layout_y="331dp"
+        android:id="@+id/gridSubject" />
 
 
 </AbsoluteLayout>
