@@ -20,7 +20,7 @@
 
 
         <activity
-            android:name=".NewSemester"
+            android:name=".NewSemesterActivity"
             android:label="@string/title_activity_new_semester"
             android:theme="@style/AppTheme.NoActionBar"
             android:noHistory="true">

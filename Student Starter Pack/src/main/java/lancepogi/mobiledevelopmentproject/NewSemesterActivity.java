@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class NewSemester extends AppCompatActivity {
+public class NewSemesterActivity extends AppCompatActivity {
 
     android.app.FragmentManager fm = getFragmentManager();
 

@@ -10,7 +10,7 @@ public class StartupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startActivity(new Intent(this, NewSemester.class));
+        startActivity(new Intent(this, NewSemesterActivity.class));
         finish();
 
     }

@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    android.app.FragmentManager fm = getFragmentManager();
 
     private ViewPager mViewPager;
     private PagerAdapterClass pagerAdapter;
@@ -68,10 +68,14 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            FragmentSettings newSettings = new FragmentSettings();
+            newSettings.show(fm, "Settings");
             return true;
         }
 
         if (id == R.id.action_about) {
+            FragmentAbout newAbout = new FragmentAbout();
+            newAbout.show(fm, "About");
             return true;
         }
 
