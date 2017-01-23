@@ -2,10 +2,13 @@ package lancepogi.mobiledevelopmentproject;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.NetworkInfo;
-import android.support.v4.view.ViewPropertyAnimatorListener;
+
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Lance on 1/11/2017.
@@ -148,6 +151,120 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(KEY_DESC, sa.getDesc());
         values.put(KEY_IS_DONE, 0);
         values.put(KEY_DEADLINE, sa.getDeadline());
+    }
+
+    public List<Subject> getAllSubject() {
+        List<Subject> subjectList = new ArrayList<Subject>();
+        String selectQuery = "SELECT * FROM " + TABLE_SUBJECT;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                Subject sub = new Subject();
+                sub.setId(Integer.parseInt(cursor.getString(0)));
+                sub.setSubjName(cursor.getString(1));
+                sub.setUnits(Integer.parseInt(cursor.getString(2)));
+                sub.setStartTime(cursor.getString(3));
+                sub.setEndTime(cursor.getString(4));
+                sub.setDay("monday", Integer.parseInt(cursor.getString(5)));
+                sub.setDay("tuesday", Integer.parseInt(cursor.getString(6)));
+                sub.setDay("wednesday", Integer.parseInt(cursor.getString(7)));
+                sub.setDay("thursday", Integer.parseInt(cursor.getString(8)));
+                sub.setDay("friday", Integer.parseInt(cursor.getString(9)));
+                sub.setDay("saturday", Integer.parseInt(cursor.getString(10)));
+                subjectList.add(sub);
+            } while (cursor.moveToNext());
+        }
+
+        return subjectList;
+    }
+
+    public List<Assignment> getAllAssignment() {
+        List<Assignment> assignmentList = new ArrayList<Assignment>();
+        String selectQuery = "SELECT * FROM " + TABLE_ASSIGNMENT;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                Assignment assign = new Assignment();
+                assign.setId(Integer.parseInt(cursor.getString(0)));
+                assign.setSubj_name(cursor.getString(1));
+                assign.setDesc(cursor.getString(2));
+                assign.setIsDone(Integer.parseInt(cursor.getString(3)));
+                assign.setDeadline(cursor.getString(4));
+                assignmentList.add(assign);
+            } while (cursor.moveToNext());
+        }
+
+        return assignmentList;
+    }
+
+    public List<SchoolActivity> getAllActivity() {
+        List<SchoolActivity> schoolActivityList = new ArrayList<SchoolActivity>();
+        String selectQuery = "SELECT * FROM " + TABLE_SCHOOL_ACTIVITY;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                SchoolActivity sc = new SchoolActivity();
+                sc.setId(Integer.parseInt(cursor.getString(0)));
+                sc.setAct_name(cursor.getString(1));
+                sc.setDesc(cursor.getString(2));
+                sc.setIsDone(Integer.parseInt(cursor.getString(3)));
+                sc.setDeadline(cursor.getString(4));
+                schoolActivityList.add(sc);
+            } while(cursor.moveToNext());
+        }
+
+        return schoolActivityList;
+    }
+
+    public int updateSubject(Subject subject) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_SUBJECT_NAME, subject.getSubjName());
+        values.put(KEY_UNITS, subject.getUnits());
+        values.put(KEY_START_TIME, subject.getStartTime());
+        values.put(KEY_END_TIME, subject.getEndTime());
+        values.put(KEY_MONDAY, subject.getDay("monday"));
+        values.put(KEY_TUESDAY, subject.getDay("tuesday"));
+        values.put(KEY_WEDNESDAY, subject.getDay("wednesday"));
+        values.put(KEY_THURSDAY, subject.getDay("thursday"));
+        values.put(KEY_FRIDAY, subject.getDay("friday"));
+        values.put(KEY_SATURDAY, subject.getDay("saturday"));
+
+        return db.update(TABLE_SUBJECT, values, KEY_ID + " = ?", new String[] {String.valueOf(subject.getID()) });
+    }
+
+    public int updateAssignment(Assignment assign) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_SUBJECT_NAME, assign.getSubj_name());
+        values.put(KEY_DESC, assign.getDesc());
+        values.put(KEY_IS_DONE, assign.getIsDone());
+        values.put(KEY_DEADLINE, assign.getDeadline());
+
+        return db.update(TABLE_ASSIGNMENT, values, KEY_ID + "= ?", new String[] {String.valueOf(assign.getID()) });
+    }
+
+    public int updateActivity(SchoolActivity sc) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_ACTIVITY_NAME, sc.getAct_name());
+        values.put(KEY_DESC, sc.getDesc());
+        values.put(KEY_IS_DONE, sc.getIsDone());
+        values.put(KEY_DEADLINE, sc.getDeadline());
+
+        return db.update(TABLE_SCHOOL_ACTIVITY, values, KEY_ID + " = ?", new String[] {String.valueOf(sc.getID()) });
     }
 
 }

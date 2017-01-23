@@ -12,11 +12,19 @@ public class SchoolActivity {
     private boolean isDone;
     private String deadline;
 
+    public SchoolActivity() {
+
+    }
+
     public SchoolActivity(String act_name, String desc, String deadline) {
         this.act_name = act_name;
         this.desc = desc;
         this.deadline = deadline;
         this.isDone = false;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setAct_name(String act_name) {
@@ -31,8 +39,13 @@ public class SchoolActivity {
         this.deadline = deadline;
     }
 
-    public void setIsDone(boolean isDone) {
-        this.isDone = isDone;
+    public void setIsDone(int isDone) {
+        if (isDone == 0) {
+            this.isDone = false;
+        }
+        else {
+            this.isDone = true;
+        }
     }
 
     public int getID() {
@@ -51,8 +64,15 @@ public class SchoolActivity {
         return this.deadline;
     }
 
-    public boolean getIsDone() {
-        return this.isDone;
+    public int getIsDone() {
+        return getBit(this.isDone);
     }
 
+    public int getBit(boolean bool) {
+        if (bool == false) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }

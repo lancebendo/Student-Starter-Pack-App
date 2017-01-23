@@ -13,6 +13,10 @@ public class Subject {
     private String endTime;
     private boolean isMonday, isTuesday, isWednesday, isThursday, isFriday, isSaturday = false;
 
+    public Subject() {
+
+    }
+
     public Subject(int id, String subjName, int units, String startTime, String endTime, String[] day) {
         this.id = id;
         this.subjName = subjName;
@@ -54,6 +58,10 @@ public class Subject {
 
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setSubjName(String subjName) {
         this.subjName = subjName;
     }
@@ -70,7 +78,16 @@ public class Subject {
         this.endTime = endTime;
     }
 
-    public void setDay(String day, boolean isDay) {
+    public void setDay(String day, int intIsDay) {
+
+        boolean isDay;
+
+        if(intIsDay == 0) {
+            isDay = false;
+        }
+        else {
+            isDay = true;
+        }
 
         switch (day) {
             case "monday" :
@@ -122,26 +139,31 @@ public class Subject {
         return this.endTime;
     }
 
-    public boolean getDay(String day) {
+    public int getDay(String day) {
         switch (day) {
             case "monday":
-                return this.isMonday;
+                return getBit(this.isMonday);
             case "tuesday":
-                return this.isTuesday;
-
+                return getBit(this.isTuesday);
             case "wednesday":
-                return this.isWednesday;
-
+                return getBit(this.isWednesday);
             case "thursday":
-                return this.isThursday;
-
+                return getBit(this.isThursday);
             case "friday":
-                return this.isFriday;
-
+                return getBit(this.isFriday);
             case "saturday":
-                return this.isSaturday;
+                return getBit(this.isSaturday);
             default:
-                return false;
+                return 0;
         }
     }
+
+    public int getBit(boolean bool) {
+        if (bool == false) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
 }

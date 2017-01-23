@@ -12,12 +12,20 @@ public class Assignment {
     private boolean isDone;
     private String deadline;
 
+    public Assignment() {
+
+    }
+
     public Assignment(int id, String subj_name, String desc, String deadline) {
         this.id = id;
         this.subj_name = subj_name;
         this.desc = desc;
         this.deadline = deadline;
         isDone = false;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setSubj_name(String subj_name) {
@@ -32,8 +40,12 @@ public class Assignment {
         this.deadline = deadline;
     }
 
-    public void setIsDone(boolean isDone) {
-        this.isDone = isDone;
+    public void setIsDone(int isDone){
+        if (isDone == 0) {
+            this.isDone = false;
+        } else {
+            this.isDone = true;
+        }
     }
 
     public int getID() {
@@ -52,8 +64,13 @@ public class Assignment {
         return this.deadline;
     }
 
-    public boolean getIsDone() {
-        return this.isDone;
+    public int getIsDone() {
+        if (isDone = false) {
+            return 0;
+        }
+        else {
+            return 1;
+        }
     }
 
 }

@@ -4,18 +4,52 @@
     android:layout_height="match_parent">
 
     <Button
-        android:text="Cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="139dp"
-        android:layout_y="430dp"
-        android:id="@+id/btnCancel" />
-
-    <Button
         android:text="Apply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_x="40dp"
+        android:layout_x="25dp"
         android:layout_y="430dp"
         android:id="@+id/btnApply" />
+
+    <Button
+        android:text="Cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="127dp"
+        android:layout_y="432dp"
+        android:id="@+id/btnCancel" />
+
+    <Button
+        android:text="Reset this App?"
+        android:layout_width="197dp"
+        android:layout_height="wrap_content"
+        android:layout_x="24dp"
+        android:layout_y="340dp"
+        android:id="@+id/btnReset" />
+
+    <TextView
+        android:text="Hour/s before the first class of the day to trigger the alarm:"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView4"
+        android:textSize="23sp"
+        android:layout_marginTop="75dp"
+        android:filterTouchesWhenObscured="true"
+        android:textColor="@android:color/black"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/tvSemester"
+        android:layout_alignStart="@+id/tvSemester"
+        android:layout_x="15dp"
+        android:layout_y="17dp" />
+
+    <EditText
+        android:layout_width="93dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_x="204dp"
+        android:layout_y="41dp"
+        android:id="@+id/etHourAlarm"
+        android:textSize="24sp" />
+
 </AbsoluteLayout>
