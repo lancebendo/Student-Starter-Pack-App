@@ -43,13 +43,14 @@
         android:layout_y="17dp" />
 
     <EditText
-        android:layout_width="93dp"
+        android:layout_width="89dp"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
+        android:text="HOUR"
         android:ems="10"
-        android:layout_x="204dp"
-        android:layout_y="41dp"
+        android:layout_x="218dp"
+        android:layout_y="45dp"
         android:id="@+id/etHourAlarm"
-        android:textSize="24sp" />
+        android:fontFamily="sans-serif" />
 
 </AbsoluteLayout>

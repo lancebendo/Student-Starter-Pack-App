@@ -1,6 +1,7 @@
 package lancepogi.mobiledevelopmentproject;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,7 +15,7 @@ import android.widget.Button;
 
 public class FragmentSettings extends DialogFragment {
 
-    Button btnApply, btnCancel;
+    Button btnApply, btnCancel, btnReset;
 
     @Nullable
     @Override
@@ -24,11 +25,22 @@ public class FragmentSettings extends DialogFragment {
 
         btnApply = (Button) rootView.findViewById(R.id.btnApply);
         btnCancel = (Button) rootView.findViewById(R.id.btnCancel);
+        btnReset = (Button) rootView.findViewById(R.id.btnReset);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
+            }
+        });
+
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBHelper dbHelper = new DBHelper(getActivity());
+                dbHelper.resetSemester();
+                startActivity(new Intent(getActivity(), StartupActivity.class));
+                getActivity().finish();
             }
         });
 

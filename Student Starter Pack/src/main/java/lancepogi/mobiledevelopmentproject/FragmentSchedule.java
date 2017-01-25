@@ -17,7 +17,6 @@ public class FragmentSchedule extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.schedule_fragment,container,false);
-        TextView tv = (TextView) rootView.findViewById(R.id.textView);
 
         return rootView;
     }

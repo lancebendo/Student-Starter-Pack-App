@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="try "
-        android:layout_width="match_parent"
+    <Button
+        android:text="Button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_x="82dp"
+        android:layout_y="133dp"
+        android:id="@+id/btnSample" />
 
-        android:id="@+id/textView" />
-</LinearLayout>
+    <TextView
+        android:text="TextView"
+        android:layout_width="94dp"
+        android:layout_height="36dp"
+        android:layout_x="83dp"
+        android:layout_y="63dp"
+        android:id="@+id/tvSample" />
+</AbsoluteLayout>

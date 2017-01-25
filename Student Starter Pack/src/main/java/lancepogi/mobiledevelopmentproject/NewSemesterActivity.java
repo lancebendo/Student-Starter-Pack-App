@@ -17,6 +17,7 @@ public class NewSemesterActivity extends AppCompatActivity {
 
     android.app.FragmentManager fm = getFragmentManager();
 
+    private DBHelper dbhelper;
     private int etColor;
 
     EditText etName, etYear1, etYear2;
@@ -28,6 +29,8 @@ public class NewSemesterActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("New Semester");
+
+        this.dbhelper = new DBHelper(this);
 
         etName = (EditText) findViewById(R.id.etName);
         etYear1 = (EditText) findViewById(R.id.etYear1);
@@ -125,15 +128,24 @@ public class NewSemesterActivity extends AppCompatActivity {
 
     public  void submitSem(View view) {
         Intent intent = new Intent(this, MainActivity.class);
+        //intent.putExtra("Semester", setSemester());
+        dbhelper.newSemester(setSemester());
+
         startActivity(intent);
     }
 
     public void newSubject(View view) {
-        FragmentNewSubject newSubject = new FragmentNewSubject();
-        newSubject.show(fm, "New Subject");
+        //FragmentNewSubject newSubject = new FragmentNewSubject();
+        //newSubject.show(fm, "New Subject");
+        dbhelper.newSemester(setSemester());
     }
 
-
+    public Semester setSemester() {
+        Semester sem = new Semester();
+        sem.setStudName(etName.getText().toString());
+        sem.setYear(etYear1.getText().toString() + " - " + etYear2.getText().toString());
+        return sem;
+    }
 
 
 

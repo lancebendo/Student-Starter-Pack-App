@@ -109,6 +109,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void newSemester(Semester sem) {
         SQLiteDatabase db = this.getWritableDatabase();
+        //db.execSQL("DELETE FROM " + TABLE_SEMESTER);
         ContentValues values = new ContentValues();
         values.put(KEY_STUDENT_NAME, sem.getStudName());
         values.put(KEY_SCHOOL_YEAR, sem.getYear());
@@ -152,6 +153,53 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(KEY_IS_DONE, 0);
         values.put(KEY_DEADLINE, sa.getDeadline());
     }
+
+    public Semester getSemester() {
+        String selectQuery = "SELECT * FROM " + TABLE_SEMESTER;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Semester sem = new Semester();
+        if(cursor.moveToFirst()) {
+            do {
+                sem.setStudName(sem.getStudName() + cursor.getString(1));
+                sem.setYear(cursor.getString(2));
+            } while (cursor.moveToNext());
+        }
+
+        return sem;
+    }
+
+    public String countSemester() {
+        String selectQuery = "SELECT COUNT(*) as bilang FROM " + TABLE_SEMESTER;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        return cursor.getString(0);
+    }
+
+    public boolean isSemesterExisting() {
+        String selectQuery = "SELECT COUNT(*) as bilang FROM " + TABLE_SEMESTER;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        if (Integer.parseInt(cursor.getString(0)) == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void resetSemester() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_SEMESTER);
+        db.execSQL("DELETE FROM " + TABLE_SUBJECT);
+        db.execSQL("DELETE FROM " + TABLE_ASSIGNMENT);
+        db.execSQL("DELETE FROM " + TABLE_SCHOOL_ACTIVITY);
+    }
+
 
     public List<Subject> getAllSubject() {
         List<Subject> subjectList = new ArrayList<Subject>();

@@ -10,7 +10,14 @@ public class StartupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startActivity(new Intent(this, NewSemesterActivity.class));
+        DBHelper dbHelper = new DBHelper(this);
+
+        if (dbHelper.isSemesterExisting() == true) {
+            startActivity(new Intent(this, MainActivity.class));
+        } else {
+            startActivity(new Intent(this, NewSemesterActivity.class));
+        }
+
         finish();
 
     }

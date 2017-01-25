@@ -1,14 +1,21 @@
 package lancepogi.mobiledevelopmentproject;
 
+import java.io.Serializable;
+
 /**
  * Created by Lance on 1/11/2017.
  */
+@SuppressWarnings("serial")
 
-public class Semester {
+public class Semester implements Serializable {
 
     private int id;
     private String studName;
     private String year;
+
+    public Semester() {
+
+    }
 
     public  Semester(int id, String studName, String year) {
         this.id = id;

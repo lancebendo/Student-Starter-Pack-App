@@ -1,5 +1,6 @@
 package lancepogi.mobiledevelopmentproject;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -9,8 +10,13 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 
 public class PagerAdapterClass extends FragmentPagerAdapter {
+
+
+
     public PagerAdapterClass(FragmentManager fm) {
+
         super(fm);
+
     }
 
     @Override
