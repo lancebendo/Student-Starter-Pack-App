@@ -3,4 +3,43 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView
+        android:id="@+id/table_scroll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginBottom="70dp">
+
+
+    <TableLayout
+        android:id="@+id/sampleTable"
+        android:layout_width="fill_parent"
+        android:layout_marginRight="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black">
+
+        <TableRow>
+            <TextView
+                android:id="@+id/tvTableText"
+                android:textColor="@android:color/black"
+                android:layout_margin="1dp"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="#ffcccccc"
+                android:text="ID" />
+            <TextView
+                android:textColor="@android:color/black"
+                android:layout_margin="1dp"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="#ffcccccc"
+                android:text="ID" />
+        </TableRow>
+
+    </TableLayout>
+    </ScrollView>
+
+
 </LinearLayout>

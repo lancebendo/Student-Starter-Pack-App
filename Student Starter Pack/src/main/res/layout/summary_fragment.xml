@@ -3,13 +3,17 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:text="Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="82dp"
-        android:layout_y="133dp"
-        android:id="@+id/btnSample" />
+    <GridView
+        android:layout_width="304dp"
+        android:layout_height="283dp"
+        android:layout_x="38dp"
+        android:layout_y="167dp"
+        android:id="@+id/gvSample"
+        android:numColumns="3"
+        android:fastScrollEnabled="true"
+        android:horizontalSpacing="2dp"
+        android:verticalSpacing="2dp"
+        android:background="#808080"/>
 
     <TextView
         android:text="TextView"
@@ -18,4 +22,41 @@
         android:layout_x="83dp"
         android:layout_y="63dp"
         android:id="@+id/tvSample" />
+
+    <TableLayout
+        android:layout_width="322dp"
+        android:layout_height="69dp"
+        android:layout_x="27dp"
+        android:layout_y="105dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <Button
+                android:text="Button"
+                android:layout_width="106dp"
+                android:layout_height="59dp"
+                android:layout_x="207dp"
+                android:layout_y="22dp"
+                android:id="@+id/btnSample" />
+
+            <Button
+                android:text="Button"
+                android:layout_width="106dp"
+                android:layout_height="59dp"
+                android:layout_x="207dp"
+                android:layout_y="22dp"
+                android:id="@+id/button2" />
+
+            <Button
+                android:text="Button"
+                android:layout_width="106dp"
+                android:layout_height="59dp"
+                android:layout_x="207dp"
+                android:layout_y="22dp"
+                android:id="@+id/button" />
+        </TableRow>
+    </TableLayout>
+
 </AbsoluteLayout>

@@ -12,6 +12,11 @@ public class StartupActivity extends AppCompatActivity {
 
         DBHelper dbHelper = new DBHelper(this);
 
+        if(AlarmReceiver.ringtone != null) {
+            if(AlarmReceiver.ringtone.isPlaying() == true) {
+                AlarmReceiver.ringtone.stop();
+            }
+        }
         if (dbHelper.isSemesterExisting() == true) {
             startActivity(new Intent(this, MainActivity.class));
         } else {
