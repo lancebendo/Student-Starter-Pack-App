@@ -169,7 +169,7 @@ public class AlarmScheduler {
         }
 
 
-        //FOR HOUR LOGIC
+        //FOR HOUR LOGIC .
         if (todayHour < targetHour) {
             sched[1] = targetHour - todayHour;
         } else if (todayHour > targetHour) {
