@@ -9,23 +9,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="No. of Units"
         android:ems="10"
         android:layout_x="15dp"
         android:layout_y="89dp"
         android:id="@+id/etSubjUnits"
-        android:textColor="?android:attr/textColorSecondary" />
+        android:textColor="?android:attr/textColorSecondary"
+        android:hint="No. of Units" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Subject Name"
         android:ems="10"
         android:layout_x="12dp"
         android:layout_y="23dp"
         android:id="@+id/etSubjName"
-        android:textColor="?android:attr/textColorSecondary" />
+        android:textColor="?android:attr/textColorSecondary"
+        android:hint="Subject Name" />
 
     <Button
         android:text="Start Time"

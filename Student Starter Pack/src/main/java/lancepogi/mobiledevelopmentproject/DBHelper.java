@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
+import java.io.File;
+import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +17,7 @@ import java.util.List;
  * Created by Lance on 1/11/2017.
  */
 
-public class DBHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper implements Serializable {
 
     // Logcat tag
     private static final String LOG = "DatabaseHelper";
@@ -30,6 +33,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_SUBJECT = "subject";
     private static final String TABLE_ASSIGNMENT = "assignment";
     private static final String TABLE_SCHOOL_ACTIVITY = "school_activity";
+    private static final String TABLE_ALARM = "alarm";
+    private static final String TABLE_NO_CLASS = "no_class";
 
     // Common column names
     private static final String KEY_ID = "id";
@@ -37,12 +42,20 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_DESC = "desc";
     private static final String KEY_IS_DONE = "isDone";
     private static final String KEY_DEADLINE = "deadline";
+    private static final String KEY_DAY = "day";
 
-    // SEMESTER Table - column nmaes
+    // SEMESTER Table - column names
+    //id
     private static final String KEY_STUDENT_NAME = "student_name";
-    private static final String KEY_SCHOOL_YEAR = "school_year";
+    private static final String KEY_START_DATE = "start_date";
+    private static final String KEY_END_DATE = "end_date";
+    private static final String KEY_DEFAULT_ALARM = "default_alarm";
+    private static final String KEY_DEFAULT_NOTIF = "default_notif";
+    private static final String KEY_ISSET = "is_set";
 
     // SUBJECT Table - column names
+    //id
+    //subj_name
     private static final String KEY_UNITS = "units";
     private static final String KEY_START_TIME = "start_time";
     private static final String KEY_END_TIME = "end_time";
@@ -54,19 +67,53 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String KEY_SATURDAY = "saturday";
 
     // SCHOOL_ACTIVITY Table - column names
+    //id
     private static final String KEY_ACTIVITY_NAME = "act_name";
+    //desc
+    //isDone
+    //deadline
+
+    //ALARM Table - column names
+    //id
+    private static final String KEY_ALARM_TIME = "alarm_time";
+    private static final String KEY_ALARM_TYPE = "alarm_type";
+
+    //NO_CLASS Table - column names
+    //id
+    //day
+    //desc
 
     public DBHelper(Context context) {
+
+
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        createTable();
+
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+
+    }
+
+    public void createTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
         String CREATE_SEMESTER_TABLE = " CREATE TABLE " + TABLE_SEMESTER + " ("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + KEY_STUDENT_NAME + " TEXT, "
-                + KEY_SCHOOL_YEAR + " TEXT)";
+                + KEY_START_DATE + " TEXT, "
+                + KEY_END_DATE + " TEXT, "
+                + KEY_DEFAULT_ALARM + " TEXT, "
+                + KEY_DEFAULT_NOTIF + " TEXT, "
+                + KEY_ISSET + " INT DEFAULT 0)";
 
         String CREATE_SUBJECT_TABLE = " CREATE TABLE " + TABLE_SUBJECT + " ("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -95,24 +142,35 @@ public class DBHelper extends SQLiteOpenHelper {
                 + KEY_IS_DONE + " INTEGER DEFAULT 0, "
                 + KEY_DEADLINE + " TEXT)";
 
+        String CREATE_ALARM_TABLE = " CREATE TABLE " + TABLE_ALARM + " ("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_ALARM_TIME + " TEXT , "
+                + KEY_ALARM_TYPE + " TEXT, "
+                + KEY_DAY + " TEXT)";
+
+        String CREATE_NOCLASS_TABLE = " CREATE TABLE " + TABLE_NO_CLASS + " ("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_DAY + " TEXT, "
+                + KEY_DESC + " TEXT)";
+
         db.execSQL(CREATE_SEMESTER_TABLE);
         db.execSQL(CREATE_SUBJECT_TABLE);
         db.execSQL(CREATE_ASSIGNMENT_TABLE);
         db.execSQL(CREATE_ACTIVITY_TABLE);
+        db.execSQL(CREATE_ALARM_TABLE);
+        db.execSQL(CREATE_NOCLASS_TABLE);
 
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
-
-    public void newSemester(Semester sem) {
+    public void newSemester(Semester sem) throws ParseException {
         SQLiteDatabase db = this.getWritableDatabase();
-        //db.execSQL("DELETE FROM " + TABLE_SEMESTER);
         ContentValues values = new ContentValues();
         values.put(KEY_STUDENT_NAME, sem.getStudName());
-        values.put(KEY_SCHOOL_YEAR, sem.getYear());
+        values.put(KEY_START_DATE, sem.getStartDateString());
+        values.put(KEY_END_DATE, sem.getEndDateString());
+        values.put(KEY_DEFAULT_ALARM, "2");
+        values.put(KEY_DEFAULT_NOTIF, "20:00");
+        values.put(KEY_ISSET, 0);
         db.insert(TABLE_SEMESTER, null, values);
         db.close();
     }
@@ -152,6 +210,18 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(KEY_DESC, sa.getDesc());
         values.put(KEY_IS_DONE, 0);
         values.put(KEY_DEADLINE, sa.getDeadline());
+        db.insert(TABLE_SCHOOL_ACTIVITY, null, values);
+        db.close();
+    }
+
+    public void newAlarm(Alarm alarm) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_DAY, alarm.getDay());
+        values.put(KEY_ALARM_TIME, alarm.getTime());
+        values.put(KEY_ALARM_TYPE, alarm.getType());
+        db.insert(TABLE_ALARM, null, values);
+        db.close();
     }
 
     public Semester getSemester() {
@@ -162,8 +232,12 @@ public class DBHelper extends SQLiteOpenHelper {
         Semester sem = new Semester();
         if(cursor.moveToFirst()) {
             do {
-                sem.setStudName(sem.getStudName() + cursor.getString(1));
-                sem.setYear(cursor.getString(2));
+                sem.setStudName(cursor.getString(1));
+                sem.setStartDate(cursor.getString(2));
+                sem.setEndDate(cursor.getString(3));
+                sem.setDefaultAlarm(cursor.getString(4));
+                sem.setDefaultNotif(cursor.getString(5));
+                sem.setIsSet(cursor.getString(6));
             } while (cursor.moveToNext());
         }
 
@@ -194,12 +268,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void resetSemester() {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_SEMESTER);
-        db.execSQL("DELETE FROM " + TABLE_SUBJECT);
-        db.execSQL("DELETE FROM " + TABLE_ASSIGNMENT);
-        db.execSQL("DELETE FROM " + TABLE_SCHOOL_ACTIVITY);
+        db.execSQL("DROP TABLE " + TABLE_SEMESTER);
+        db.execSQL("DROP TABLE " + TABLE_SUBJECT);
+        db.execSQL("DROP TABLE " + TABLE_ASSIGNMENT);
+        db.execSQL("DROP TABLE " + TABLE_SCHOOL_ACTIVITY);
+        db.execSQL("DROP TABLE " + TABLE_ALARM);
+        db.execSQL("DROP TABLE " + TABLE_NO_CLASS);
+        createTable();
     }
-
 
     public List<Subject> getAllSubject() {
         List<Subject> subjectList = new ArrayList<Subject>();
@@ -213,7 +289,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 Subject sub = new Subject();
                 sub.setId(Integer.parseInt(cursor.getString(0)));
                 sub.setSubjName(cursor.getString(1));
-                sub.setUnits(Integer.parseInt(cursor.getString(2)));
+                sub.setUnits(cursor.getString(2));
                 sub.setStartTime(cursor.getString(3));
                 sub.setEndTime(cursor.getString(4));
                 sub.setDay("monday", Integer.parseInt(cursor.getString(5)));
@@ -227,6 +303,61 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         return subjectList;
+    }
+
+    public List<Subject> getSubjectOn(String day) {
+
+        List<Subject> subjectList = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String selectQuery;
+
+        switch (day) {
+            case "monday" :
+                selectQuery = "SELECT * FROM " + TABLE_SUBJECT + " WHERE " + KEY_MONDAY + " = 1";
+                break;
+            case "tuesday" :
+                selectQuery = "SELECT * FROM " + TABLE_SUBJECT + " WHERE " + KEY_TUESDAY + " = 1";
+                break;
+            case "wednesday" :
+                selectQuery = "SELECT * FROM " + TABLE_SUBJECT + " WHERE " + KEY_WEDNESDAY + " = 1";
+                break;
+            case "thursday" :
+                selectQuery = "SELECT * FROM " + TABLE_SUBJECT + " WHERE " + KEY_THURSDAY + " = 1";
+                break;
+            case "friday" :
+                selectQuery = "SELECT * FROM " + TABLE_SUBJECT + " WHERE " + KEY_FRIDAY + " = 1";
+                break;
+            case "saturday" :
+                selectQuery = "SELECT * FROM " + TABLE_SUBJECT + " WHERE " + KEY_SATURDAY + " = 1";
+                break;
+            default:
+                selectQuery = "SELECT * FROM " + TABLE_SUBJECT;
+                break;
+        }
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                Subject sub = new Subject();
+                sub.setId(Integer.parseInt(cursor.getString(0)));
+                sub.setSubjName(cursor.getString(1));
+                sub.setUnits(cursor.getString(2));
+                sub.setStartTime(cursor.getString(3));
+                sub.setEndTime(cursor.getString(4));
+                sub.setDay("monday", Integer.parseInt(cursor.getString(5)));
+                sub.setDay("tuesday", Integer.parseInt(cursor.getString(6)));
+                sub.setDay("wednesday", Integer.parseInt(cursor.getString(7)));
+                sub.setDay("thursday", Integer.parseInt(cursor.getString(8)));
+                sub.setDay("friday", Integer.parseInt(cursor.getString(9)));
+                sub.setDay("saturday", Integer.parseInt(cursor.getString(10)));
+                subjectList.add(sub);
+            } while (cursor.moveToNext());
+        }
+
+        return subjectList;
+
     }
 
     public List<Assignment> getAllAssignment() {
@@ -273,6 +404,41 @@ public class DBHelper extends SQLiteOpenHelper {
         return schoolActivityList;
     }
 
+    public List<Alarm> getAlarm() {
+        List<Alarm> alarmList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_ALARM;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                Alarm alarm = new Alarm();
+                alarm.setId(Integer.parseInt(cursor.getString(0)));
+                alarm.setTime(cursor.getString(1));
+                alarm.setType(cursor.getString(2));
+                alarm.setDay(cursor.getString(3));
+                alarmList.add(alarm);
+            } while(cursor.moveToNext());
+        }
+
+        return alarmList;
+    }
+
+    public int updateSemesterAlarm(Semester semester) throws ParseException {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_STUDENT_NAME, semester.getStudName());
+        values.put(KEY_START_DATE, semester.getStartDateString());
+        values.put(KEY_END_DATE, semester.getEndDateString());
+        values.put(KEY_DEFAULT_ALARM, semester.getDefaultAlarmString());
+        values.put(KEY_DEFAULT_NOTIF, semester.getDefaultNotifString());
+        values.put(KEY_ISSET, semester.getIsSetString());
+
+        return db.update(TABLE_SEMESTER, values, KEY_ID + " = ", new String[] {String.valueOf(semester.getID()) });
+    }
+
     public int updateSubject(Subject subject) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -288,7 +454,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(KEY_FRIDAY, subject.getDay("friday"));
         values.put(KEY_SATURDAY, subject.getDay("saturday"));
 
-        return db.update(TABLE_SUBJECT, values, KEY_ID + " = ?", new String[] {String.valueOf(subject.getID()) });
+        return db.update(TABLE_SUBJECT, values, KEY_ID + " = ", new String[] {String.valueOf(subject.getID()) });
     }
 
     public int updateAssignment(Assignment assign) {
@@ -314,5 +480,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return db.update(TABLE_SCHOOL_ACTIVITY, values, KEY_ID + " = ?", new String[] {String.valueOf(sc.getID()) });
     }
+
+    public void removeSubject(String subjectName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_SUBJECT + " WHERE " + KEY_SUBJECT_NAME + " = '" + subjectName + "'");
+    }
+
 
 }

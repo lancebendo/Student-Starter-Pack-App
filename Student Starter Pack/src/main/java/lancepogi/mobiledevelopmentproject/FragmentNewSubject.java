@@ -1,10 +1,12 @@
 package lancepogi.mobiledevelopmentproject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,13 +14,21 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Lance on 12/27/2016.
@@ -30,7 +40,16 @@ public class FragmentNewSubject extends DialogFragment implements OnClickListene
     EditText etSubjName, etUnits, etStart, etEnd;
     CheckBox cbMonday, cbTuesday, cbWednesday, cbThursday, cbFriday, cbSaturday;
 
-    private int mHour, mMinute, etColor;
+    SubjectListAdapter newAdapter;
+    List<Subject> subjectList;
+
+    private int mHour, mMinute;
+
+
+
+    public static final String[] dayArray = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+    int[] startTime = {99,99};
+    int[] endTime = {99,99};
 
     @Nullable
     @Override
@@ -63,63 +82,13 @@ public class FragmentNewSubject extends DialogFragment implements OnClickListene
 
             @Override
             public void onClick(View v) {
+                submitSubject();
                 dismiss();
             }
         });
 
-        etSubjName.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                if(etSubjName.getText().toString().equals("Subject Name")) {
-                    etSubjName.setTextColor(Color.BLACK);
-                    etSubjName.setText("");
-                }
-                else {
-                    etSubjName.setText(etSubjName.getText());
-                }
-                return false;
-            }
-        });
-        etSubjName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus == false) {
-                    if(etSubjName.getText().toString().equals("")) {
-                        etSubjName.setTextColor(Color.GRAY);
-                        etSubjName.setText("Subject Name");
-                    } else {
-                    }
-                }
-            }
-        });
-
-        etUnits.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                if(etUnits.getText().toString().equals("No. of Units")) {
-                    etUnits.setTextColor(Color.BLACK);
-                    etUnits.setText("");
-                }
-                else {
-                    etUnits.setText(etUnits.getText());
-                }
-                return false;
-            }
-        });
-        etUnits.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus == false) {
-                    if(etUnits.getText().toString().equals("")) {
-                        etUnits.setTextColor(Color.GRAY);
-                        etUnits.setText("No. of Units");
-                    } else {
-                    }
-                }
-            }
-        });
+        this.newAdapter = (SubjectListAdapter) getArguments().getSerializable("adapter");
+        this.subjectList = (List<Subject>) getArguments().getSerializable("subject");
 
         return rootView;
     }
@@ -133,41 +102,73 @@ public class FragmentNewSubject extends DialogFragment implements OnClickListene
     public void onClick(View v) {
 
         if (v == btnStart) {
-            final Calendar c = Calendar.getInstance();
+            String defaultTime = "7:00 am";
+            SimpleDateFormat simpleTime = new SimpleDateFormat("hh:mm");
 
-            mHour = c.get(Calendar.HOUR_OF_DAY);
-            mMinute = c.get(Calendar.MINUTE);
+            if(startTime[0] == 99 && startTime[0] == 99) {
+                startTime[0] = 7;
+                startTime[1] = 0;
+            }
 
             TimePickerDialog tpd = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                    etStart.setText(getTime(hourOfDay, minute));
+                    startTime[0] = hourOfDay;
+                    startTime[1] = minute;
+                    etStart.setText(getTimePeriod(hourOfDay, minute));
                 }
-            }, mHour, mMinute, false);
+            }, startTime[0], startTime[1], false);
             tpd.show();
         }
 
         if (v == btnEnd) {
-            final Calendar c = Calendar.getInstance();
 
-            mHour = c.get(Calendar.HOUR_OF_DAY);
-            mMinute = c.get(Calendar.MINUTE);
+            if (endTime[0] == 99 && endTime[1] == 99) {
+                endTime[0] = 8;
+                endTime[1] = 0;
+            }
 
             TimePickerDialog tpd = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    etEnd.setText(getTime(hourOfDay, minute));
+                    endTime[0] = hourOfDay;
+                    endTime[1] = minute;
+                    etEnd.setText(getTimePeriod(hourOfDay, minute));
                 }
-            }, mHour, mMinute, false);
+            }, endTime[0], endTime[1], false);
             tpd.show();
         }
 
 
     }
 
+
     private String getTime(int hour, int minute) {
-        String period;
+        String period, hourString;
+        int minuteLength = (int) Math.log10(minute) + 1;
+        int hourLength = (int) Math.log10(hour) + 1;
+
+
+        if(hourLength == 1) {
+            hourString = "0" + String.valueOf(hour);
+        } else {
+            hourString = String.valueOf(hour);
+        }
+
+        if (minuteLength == 1) {
+            return hourString + ":0" + minute;
+        } else {
+            if (minute == 0) {
+                return hourString + ":0" + minute; //dito yung para :00 yung lumalabas sa minutes pag zero .
+            } else {
+                return hourString + ":" + minute;
+            }
+        }
+
+    }
+
+    private String getTimePeriod(int hour, int minute) {
+        String period, hourString;
         int minuteLength = (int) Math.log10(minute) + 1;
 
         if (hour > 12) {
@@ -182,12 +183,89 @@ public class FragmentNewSubject extends DialogFragment implements OnClickListene
             period = "AM";
         }
 
-        if (minuteLength == 1) {
-            return hour + ":0" + minute + " " + period;
+        int hourLength = (int) Math.log10(hour) + 1;
+
+        if(hourLength == 1) {
+            hourString = "0" + String.valueOf(hour);
         } else {
-            return hour + ":" + minute + " " + period;
+            hourString = String.valueOf(hour);
+        }
+
+        if (minuteLength == 1) {
+            return hourString + ":0" + minute + " " + period;
+        } else {
+            if (minute == 0) {
+                return hourString + ":0" + minute + " " + period; //dito yung para :00 yung lumalabas sa minutes pag zero .
+            } else {
+                return hourString + ":" + minute + " " + period;
+            }
         }
 
     }
+
+    private int getDay(String day) {
+        switch (day) {
+            case "monday" :
+                if (cbMonday.isChecked()){
+                    return 1;
+                } else {
+                    return 0;
+                }
+
+            case "tuesday" :
+                if(cbTuesday.isChecked()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+
+            case "wednesday" :
+                if(cbWednesday.isChecked()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+
+            case "thursday" :
+                if(cbThursday.isChecked()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+
+            case "friday" :
+                if(cbFriday.isChecked()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+
+            case "saturday" :
+                if (cbSaturday.isChecked()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+                default:
+                    return 0;
+        }
+    }
+
+    private void submitSubject() {
+
+        Subject newSubject = new Subject();
+        newSubject.setSubjName(etSubjName.getText().toString());
+        newSubject.setStartTime(getTime(startTime[0], startTime[1]));
+        newSubject.setEndTime(getTime(endTime[0], endTime[1]));
+        newSubject.setUnits(etUnits.getText().toString());
+
+        for (String dayString : dayArray) {
+            newSubject.setDay(dayString, getDay(dayString));
+        }
+
+        this.subjectList.add(newSubject);
+        this.newAdapter.notifyDataSetChanged();
+    }
+
 }
 

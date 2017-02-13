@@ -1,5 +1,9 @@
 package lancepogi.mobiledevelopmentproject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Lance on 1/11/2017.
  */
@@ -8,7 +12,7 @@ public class Subject {
 
     private int id;
     private String subjName;
-    private int units;
+    private String units;
     private String startTime;
     private String endTime;
     private boolean isMonday, isTuesday, isWednesday, isThursday, isFriday, isSaturday = false;
@@ -17,7 +21,7 @@ public class Subject {
 
     }
 
-    public Subject(int id, String subjName, int units, String startTime, String endTime, String[] day) {
+    public Subject(int id, String subjName, String units, String startTime, String endTime, String[] day) {
         this.id = id;
         this.subjName = subjName;
         this.units = units;
@@ -66,7 +70,7 @@ public class Subject {
         this.subjName = subjName;
     }
 
-    public void setUnits(int units) {
+    public void setUnits(String units) {
         this.units = units;
     }
 
@@ -119,15 +123,15 @@ public class Subject {
 
     }
 
-    public int getID() {
-        return this.id;
+    public String getID() {
+        return String.valueOf(this.id);
     }
 
     public String getSubjName() {
         return this.subjName;
     }
 
-    public int getUnits() {
+    public String getUnits() {
         return this.units;
     }
 
@@ -164,6 +168,73 @@ public class Subject {
         } else {
             return 1;
         }
+    }
+
+    public long getStartMilliTime() throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        Date time = dateFormat.parse(this.startTime);
+        return time.getTime();
+    }
+
+    public long getEndtMilliTime() throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        Date time = dateFormat.parse(this.endTime);
+        return time.getTime();
+    }
+
+    public String getDayArray() {
+        String[][] dayArray = {
+                {"monday", "M"}, {"tuesday", "T"}, {"wednesday", "W"}, {"thursday", "Th"}, {"friday", "F"}, {"saturday", "S"}
+        };
+
+        String loopString = "";
+
+        for (int i = 0; i < dayArray.length; i++) {
+            if(getDay(dayArray[i][0]) == 1) {
+
+                if(loopString == "") {
+                    loopString = dayArray[i][1];
+                } else {
+                    loopString = loopString + " - " + dayArray[i][1];
+                }
+            }
+        }
+
+        return loopString;
+    }
+
+    private String getTime(int hour, int minute) {
+        String period, hourString;
+        int minuteLength = (int) Math.log10(minute) + 1;
+        int hourLength = (int) Math.log10(hour) + 1;
+        if (hour > 12) {
+            hour = hour - 12;
+            period = "PM";
+        } else if (hour == 0){
+            hour = 12;
+            period = "AM";
+        } else if (hour == 12) {
+            period = "PM";
+        } else {
+            period = "AM";
+        }
+
+        if(hourLength == 1) {
+            hourString = "0" + String.valueOf(hour);
+        } else {
+            hourString = String.valueOf(hour);
+        }
+
+        if (minuteLength == 1) {
+            return hourString + ":0" + minute + " " + period;
+        } else {
+            if (minute == 0) {
+                return hourString + ":0" + minute + " " + period; //dito yung para :00 yung lumalabas sa minutes pag zero .
+            } else {
+                return hourString + ":" + minute + " " + period;
+            }
+        }
+
     }
 
 }

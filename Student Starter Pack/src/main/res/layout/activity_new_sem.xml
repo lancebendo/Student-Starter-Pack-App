@@ -23,7 +23,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <TextView
-        android:text="Student Name:"
+        android:text="Student's nickname:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tvName"
@@ -41,87 +41,40 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Enter your Name"
         android:ems="10"
         android:id="@+id/etName"
         android:layout_below="@+id/tvName"
         android:layout_alignLeft="@+id/tvName"
         android:layout_alignStart="@+id/tvName"
         android:layout_marginTop="12dp"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="@android:color/black"
         android:layout_x="27dp"
         android:layout_y="120dp"
         android:textColorLink="?attr/actionModeSplitBackground"
 
         android:focusableInTouchMode="true"
-        android:textAllCaps="false" />
-
-    <TextView
-        android:text="School Year:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvSchoolYear"
-        android:layout_marginTop="16dp"
-        android:textSize="23sp"
-        android:layout_below="@+id/tvSemester"
-        android:layout_alignLeft="@+id/tvSemester"
-        android:layout_alignStart="@+id/tvSemester"
-        android:textColor="@android:color/black"
-        android:layout_x="30dp"
-        android:layout_y="179dp" />
-
-    <EditText
-        android:layout_width="51dp"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="20xx"
-        android:ems="10"
-        android:layout_x="31dp"
-        android:layout_y="218dp"
-        android:id="@+id/etYear1"
-        android:textColor="?android:attr/textColorSecondary" />
-
-    <TextView
-        android:text="-"
-        android:layout_width="24dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textSize="23sp"
-        android:layout_below="@+id/tvSemester"
-        android:layout_alignLeft="@+id/tvSemester"
-        android:layout_alignStart="@+id/tvSemester"
-        android:textColor="@android:color/black"
-        android:layout_x="96dp"
-        android:layout_y="222dp"
-        />
-
-    <EditText
-        android:layout_width="54dp"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="20xx"
-        android:ems="10"
-        android:layout_x="127dp"
-        android:layout_y="218dp"
-        android:id="@+id/etYear2"
-        android:textColor="?android:attr/textColorSecondary" />
+        android:textAllCaps="false"
+        android:hint="Enter your Nickname" />
 
     <Button
         android:text="Add Subject"
-        android:layout_width="wrap_content"
-        android:layout_height="37dp"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
         android:layout_x="27dp"
-        android:layout_y="275dp"
+        android:layout_y="264dp"
         android:id="@+id/btnAddSubject"
         android:onClick="newSubject"/>
 
-    <Button
-        android:text="Delete Subject"
-        android:layout_width="wrap_content"
-        android:layout_height="37dp"
-        android:layout_x="150dp"
-        android:layout_y="274dp"
-        android:id="@+id/btnDeleteSubject" />
+    <ListView
+        android:layout_width="341dp"
+        android:layout_height="164dp"
+        android:layout_x="10dp"
+        android:layout_y="321dp"
+        android:id="@+id/lvSubject"
+        android:drawSelectorOnTop="false"
+
+
+        />
 
     <Button
         android:text="Submit"
@@ -133,15 +86,64 @@
         android:layout_marginTop="43dp"
         android:id="@+id/btnSubmit"
         android:onClick="submitSem"
-        android:layout_x="73dp"
-        android:layout_y="514dp" />
+        android:layout_x="69dp"
+        android:layout_y="505dp" />
 
-    <GridView
-        android:layout_width="310dp"
-        android:layout_height="175dp"
-        android:layout_x="32dp"
-        android:layout_y="331dp"
-        android:id="@+id/gridSubject" />
+    <Button
+        android:text="Set Start Date"
+        android:layout_width="135dp"
+        android:layout_height="37dp"
+        android:layout_x="29dp"
+        android:layout_y="171dp"
+        android:id="@+id/btnStartDate" />
 
+    <TextView
+        android:text="MM/dd/yyyy"
+        android:layout_width="144dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvStartDate"
+        android:layout_marginTop="16dp"
+        android:textSize="17sp"
+        android:layout_below="@+id/tvSemester"
+        android:layout_alignLeft="@+id/tvSemester"
+        android:layout_alignStart="@+id/tvSemester"
+        android:textColor="@android:color/black"
+        android:layout_x="170dp"
+        android:layout_y="179dp" />
 
+    <Button
+        android:text="Set End Date"
+        android:layout_width="135dp"
+        android:layout_height="37dp"
+        android:layout_x="29dp"
+        android:layout_y="220dp"
+        android:id="@+id/btnEndDate" />
+
+    <TextView
+        android:text="MM/dd/yyyy"
+        android:layout_width="144dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvEndDate"
+        android:layout_marginTop="16dp"
+        android:textSize="17sp"
+        android:layout_below="@+id/tvSemester"
+        android:layout_alignLeft="@+id/tvSemester"
+        android:layout_alignStart="@+id/tvSemester"
+        android:textColor="@android:color/black"
+        android:layout_x="170dp"
+        android:layout_y="228dp" />
+
+    <TextView
+        android:text="to"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="15sp"
+        android:layout_below="@+id/tvSemester"
+        android:layout_alignLeft="@+id/tvSemester"
+        android:layout_alignStart="@+id/tvSemester"
+        android:textColor="@android:color/black"
+        android:layout_x="171dp"
+        android:layout_y="205dp"
+        />
 </AbsoluteLayout>

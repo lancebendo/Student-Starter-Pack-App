@@ -1,153 +1,161 @@
 package lancepogi.mobiledevelopmentproject;
 
+import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+
 import android.support.v7.widget.Toolbar;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
-public class NewSemesterActivity extends AppCompatActivity {
+public class NewSemesterActivity extends Activity implements View.OnClickListener{
 
     android.app.FragmentManager fm = getFragmentManager();
 
-    private DBHelper dbhelper;
-    private int etColor;
 
-    EditText etName, etYear1, etYear2;
+    private SubjectListAdapter subjAdapter;
+    DBHelper dbHelper;
+
+    Button btnStartDate, btnEndDate;
+    TextView tvStartDate, tvEndDate;
+
+    EditText etName;
+
+    private int[] startDateInt = {0,0,0}; //first index is year, second is month, third is day
+    private int[] endDateInt = {0,0,0}; //first index is year, second is month, third is day
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_sem);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("New Semester");
+        toolbar.setTitle("New Semester");
+        toolbar.setTitleTextColor(Color.WHITE);
+        List<Subject> subjectList = new ArrayList<Subject>();
+        this.dbHelper = new DBHelper(this);
+        this.subjAdapter = new SubjectListAdapter(this, R.layout.list_view_layout, subjectList);
+        ListView lv = (ListView) findViewById(R.id.lvSubject);
+        lv.invalidateViews();
 
-        this.dbhelper = new DBHelper(this);
+        TextView headerView = new TextView(this);
+        headerView.setText("Subject Name          Unit               Day");
+        lv.addHeaderView(headerView);
+        lv.setAdapter(this.subjAdapter);
+
 
         etName = (EditText) findViewById(R.id.etName);
-        etYear1 = (EditText) findViewById(R.id.etYear1);
-        etYear2 = (EditText) findViewById(R.id.etYear2);
-        etColor = etName.getCurrentTextColor();
 
-        etName.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
 
-                if(etName.getText().toString().equals("Enter your Name")) {
-                    etName.setTextColor(Color.BLACK);
-                    etName.setText("");
-                }
-                else {
-                    etName.setText(etName.getText());
-                }
-                return false;
-            }
-        });
+        this.btnStartDate = (Button) findViewById(R.id.btnStartDate);
+        this.btnEndDate = (Button) findViewById(R.id.btnEndDate);
+        this.tvStartDate = (TextView) findViewById(R.id.tvStartDate);
+        this.tvEndDate = (TextView) findViewById(R.id.tvEndDate);
 
-        etName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus == false) {
-                    if(etName.getText().toString().equals("")) {
-                        etName.setTextColor(etColor);
-                        etName.setText("Enter your Name");
-                    } else {
-                    }
-                }
-            }
-        });
+        btnStartDate.setOnClickListener(this);
+        btnEndDate.setOnClickListener(this);
 
-        etYear1.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (etYear1.getText().toString().equals("20xx")) {
-                    etYear1.setTextColor(Color.BLACK);
-                    etYear1.setText("");
-                } else {
-                    etYear1.setText(etYear1.getText());
-                }
-                return false;
-            }
-        });
-
-        etYear1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus == false) {
-                    if(etYear1.getText().toString().equals("")) {
-                        etYear1.setTextColor(etColor);
-                        etYear1.setText("20xx");
-                    } else {
-
-                    }
-
-                }
-            }
-        });
-
-        etYear2.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (etYear2.getText().toString().equals("20xx")) {
-                    etYear2.setTextColor(Color.BLACK);
-                    etYear2.setText("");
-                } else {
-                    etYear2.setText(etYear2.getText());
-                }
-                return false;
-            }
-        });
-
-        etYear2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus == false) {
-                    if(etYear2.getText().toString().equals("")) {
-                        etYear2.setTextColor(etColor);
-                        etYear2.setText("20xx");
-                    } else {
-
-                    }
-
-                }
-            }
-        });
     }
 
-    public  void submitSem(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        //intent.putExtra("Semester", setSemester());
-        dbhelper.newSemester(setSemester());
 
+    public  void submitSem(View view) throws ParseException {
+        Intent intent = new Intent(this, MainActivity.class);
+        List<Subject> newList = subjAdapter.subjectList;
+        for (Subject subject:newList) {
+            dbHelper.newSubject(subject);
+        }
+
+        dbHelper.newSemester(setSemester());
+        AlarmScheduler alarmScheduler = new AlarmScheduler(this);
+        alarmScheduler.setAlarmSchedule();
         startActivity(intent);
     }
 
     public void newSubject(View view) {
-        //FragmentNewSubject newSubject = new FragmentNewSubject();
-        //newSubject.show(fm, "New Subject");
-        dbhelper.newSemester(setSemester());
+        FragmentNewSubject newSubject = new FragmentNewSubject();
+        Bundle args = new Bundle();
+        args.putSerializable("subject", (Serializable) subjAdapter.subjectList);
+        args.putSerializable("adapter", subjAdapter);
+        newSubject.setArguments(args);
+        newSubject.show(fm, "New Subject");
+
     }
 
+
+
     public Semester setSemester() {
+
+        String startDateString = startDateInt[1] + "/" + startDateInt[2] + "/" + startDateInt[0];
+        String endDateString = endDateInt[1] + "/" + endDateInt[2] + "/" + endDateInt[0];
+
         Semester sem = new Semester();
+
         sem.setStudName(etName.getText().toString());
-        sem.setYear(etYear1.getText().toString() + " - " + etYear2.getText().toString());
+        sem.setStartDate(startDateString);
+        sem.setEndDate(endDateString);
         return sem;
     }
 
 
+    @Override
+    public void onClick(View v) {
+        if(v == this.btnStartDate) {
+            Calendar c = Calendar.getInstance();
 
+            if (startDateInt[0] == 0) {
+                startDateInt[0] = c.get(Calendar.YEAR);
+                startDateInt[1] = c.get(Calendar.MONTH);
+                startDateInt[2] = c.get(Calendar.DAY_OF_MONTH);
+            }
+            DatePickerDialog dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    startDateInt[0] = year;
+                    startDateInt[1] = month;
+                    startDateInt[2] = dayOfMonth;
+                    tvStartDate.setText(getMonth(startDateInt[1]) + " " + startDateInt[2] + ", " + startDateInt[0]);
+
+                }
+            }, startDateInt[0], startDateInt[1], startDateInt[2]);
+            dpd.show();
+        }
+
+        if(v == this.btnEndDate) {
+            Calendar c = Calendar.getInstance();
+
+            if (endDateInt[0] == 0) {
+                endDateInt[0] = c.get(Calendar.YEAR);
+                endDateInt[1] = c.get(Calendar.MONTH);
+                endDateInt[2] = c.get(Calendar.DAY_OF_MONTH);
+            }
+            DatePickerDialog dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    endDateInt[0] = year;
+                    endDateInt[1] = month;
+                    endDateInt[2] = dayOfMonth;
+                    tvEndDate.setText(getMonth(endDateInt[1]) + " " + endDateInt[2] + ", " + endDateInt[0]);
+                }
+            }, endDateInt[0], endDateInt[1], endDateInt[2]);
+            dpd.show();
+        }
+    }
+
+    private String getMonth(int index) {
+        String[] month = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+        return month[index];
+    }
 
 }

@@ -26,7 +26,7 @@ public class FragmentSummary extends android.support.v4.app.Fragment {
         Button btn = (Button) rootView.findViewById(R.id.btnSample);
         final DBHelper dbHelper = new DBHelper(getActivity());
         Semester sem = dbHelper.getSemester();
-        tv.setText( dbHelper.countSemester());
+        tv.setText( sem.getDefaultAlarmString());
 
         /*
         btn.setOnClickListener(new View.OnClickListener() {
@@ -49,11 +49,12 @@ public class FragmentSummary extends android.support.v4.app.Fragment {
 
         sampleList.add(String.valueOf(sem.getID()));
         sampleList.add(sem.getStudName());
-        sampleList.add(sem.getYear());
+        sampleList.add(sem.getStartDateString());
+        sampleList.add(sem.getEndDateString());
+        sampleList.add(sem.getDefaultAlarmString());
+        sampleList.add(sem.getDefaultNotifString());
+        sampleList.add(String.valueOf(sem.getIsSet()));
 
-        sampleList.add("23");
-        sampleList.add("pogi");
-        sampleList.add("ako");
 
 
         gvSample.setAdapter(aa);
