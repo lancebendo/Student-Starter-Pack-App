@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,10 +18,8 @@ import java.util.List;
 
 public class AlarmScheduler {
 
-    private static final String[] dayArray = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+    public static final String[] dayArray = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
     private Context context;
-
-    AlarmManager alarmManager;
 
 
     public AlarmScheduler(Context context) {
@@ -50,28 +47,59 @@ public class AlarmScheduler {
             if (subjectLoop.size() != 0) {
                 dbHelper.newAlarm(getAlarm(earliest, day, "alarm"));
             }
-
         }
+    }
+
+
+    public void setAllAlarm(List<Alarm> alarmList) throws ParseException {
+
+        for (Alarm alarm:alarmList) {
+
+            int pendingIntentId = alarm.getId() + 1;    //+1 lagi to avoid 0. zero is for notifbuilder pendingintent only
+            Calendar alarmSchedule = getAlarmSchedule(alarm);
+            Calendar testCal = Calendar.getInstance();
+            testCal.add(Calendar.SECOND, 15);
+
+            Intent alarmIntent = new Intent(this.context, AlarmReceiver.class);
+            PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(this.context, pendingIntentId, alarmIntent, 0);
+
+            AlarmManager am = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
+            //am.set(am.RTC_WAKEUP, alarmSchedule.getTimeInMillis(), alarmPendingIntent);
+            am.set(am.RTC_WAKEUP, testCal.getTimeInMillis(), alarmPendingIntent);
+        }
+    }
+
+    public void setNextWeekAlarm(String day) throws ParseException {
+
+        DBHelper dbHelper = new DBHelper(context);
+        Alarm alarm = dbHelper.getAlarmOn(day);
+
+        int pendingIntentId = alarm.getId() + 1;    //+1 lagi to avoid 0. zero is for notifbuilder pendingintent only
+        Calendar alarmSchedule = getAlarmSchedule(alarm);
+        Calendar testCal = Calendar.getInstance();
+        testCal.add(Calendar.SECOND, 15);
+
+        Intent alarmIntent = new Intent(this.context, AlarmReceiver.class);
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(this.context, pendingIntentId, alarmIntent, 0);
+
+        AlarmManager am = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
+        //am.set(am.RTC_WAKEUP, alarmSchedule.getTimeInMillis(), alarmPendingIntent);
+        am.set(am.RTC_WAKEUP, testCal.getTimeInMillis(), alarmPendingIntent);
 
     }
 
 
-    public void setIntent(String day) {
+
+    public void cancelAlarm(Alarm alarm) {
+
+        int pendingIntentId = alarm.getId();
+
         Intent sampleIntent = new Intent(this.context, AlarmReceiver.class);
-        PendingIntent newPendingIntent = PendingIntent.getBroadcast(this.context, 0, sampleIntent, 0);
+        PendingIntent newPendingIntent = PendingIntent.getBroadcast(this.context, pendingIntentId, sampleIntent, 0);
 
-        Calendar now = Calendar.getInstance();
-        //long time = now.getTimeInMillis() + 60000;
-        now.setTimeInMillis(now.getTimeInMillis() + 5000);
-        //now.set(Calendar.SECOND, 0);
+        newPendingIntent.cancel();
 
-        this.alarmManager = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), newPendingIntent);
-        //this.alarmIsSet = true;
-        //this.sample.setText(now.getTime().toString());
-        Toast.makeText(this.context, "Alarm is set", Toast.LENGTH_LONG).show();
     }
-
 
 
     private long getLong(long earliest, long loopObject) {
@@ -125,7 +153,7 @@ public class AlarmScheduler {
     }
 
 
-    private int getIndex(String item) {
+    public static int getIndex(String item) {
         int index = 1;	//index begins in 1 because 0 is considered as sunday
         for (String str : dayArray) {
             if (str == item) {
@@ -141,7 +169,7 @@ public class AlarmScheduler {
 
 
     //SCHEDULER MAIN ENGINE. HEHE. MADE BY: LANCE PATRICK BENDO POGI            2/9/2017
-    public Calendar getAlarmSchedule(Alarm alarm) throws ParseException {
+    public static Calendar getAlarmSchedule(Alarm alarm) throws ParseException {
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
         Date tempDate = dt.parse(alarm.getTime());
         Calendar c = Calendar.getInstance();

@@ -58,7 +58,6 @@ public class NewSemesterActivity extends Activity implements View.OnClickListene
 
         etName = (EditText) findViewById(R.id.etName);
 
-
         this.btnStartDate = (Button) findViewById(R.id.btnStartDate);
         this.btnEndDate = (Button) findViewById(R.id.btnEndDate);
         this.tvStartDate = (TextView) findViewById(R.id.tvStartDate);
@@ -80,6 +79,7 @@ public class NewSemesterActivity extends Activity implements View.OnClickListene
         dbHelper.newSemester(setSemester());
         AlarmScheduler alarmScheduler = new AlarmScheduler(this);
         alarmScheduler.setAlarmSchedule();
+        alarmScheduler.setAllAlarm(dbHelper.getAlarm());
         startActivity(intent);
     }
 

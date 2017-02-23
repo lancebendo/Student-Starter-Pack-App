@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.util.Calendar;
 
 /**
@@ -22,6 +23,8 @@ import java.util.Calendar;
  */
 
 public class AlarmService extends Service {
+
+    public static final String[] dayArray = {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
 
     static Ringtone ringtone;
 
@@ -37,7 +40,16 @@ public class AlarmService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Toast.makeText(this.getApplicationContext(), "AYTO NA!", Toast.LENGTH_LONG).show();
+        DBHelper dbHelper = new DBHelper(getApplicationContext());
+        Calendar c = Calendar.getInstance();
+        String dayToday = this.dayArray[c.get(Calendar.DAY_OF_WEEK) - 1];
+
+        if (dbHelper.isNoClass(dayToday) == true) {
+            return START_NOT_STICKY;
+        }
+
+
+        Toast.makeText(this.getApplicationContext(), "AYTO NA!" + dayToday, Toast.LENGTH_LONG).show();
         Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if(alarmUri == null) {
             alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -48,8 +60,6 @@ public class AlarmService extends Service {
 
         Intent newIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent notifIntent = PendingIntent.getActivity(this, 0, newIntent, 0);
-
-
 
         NotificationManager notif = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder nbuilder = new NotificationCompat.Builder(getApplicationContext())
@@ -64,7 +74,21 @@ public class AlarmService extends Service {
                 ;
 
         notif.notify(1, nbuilder.build());
-/*
+
+
+        /*eto yung loop
+        AlarmScheduler alarmScheduler = new AlarmScheduler(getApplicationContext());
+
+
+        try {
+            alarmScheduler.setNextWeekAlarm(dayToday);
+        } catch (ParseException e) {
+            Toast.makeText(this.getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
+
+        }
+
+
+
         Intent sampleIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
         PendingIntent newPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, sampleIntent, 0);
 
@@ -79,7 +103,7 @@ public class AlarmService extends Service {
         //this.sample.setText(now.getTime().toString());
         Toast.makeText(getApplicationContext(), "Alarm is set", Toast.LENGTH_LONG).show();
 */
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY;
     }
 
     @Override

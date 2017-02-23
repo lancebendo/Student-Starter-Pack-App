@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.ParseException;
 import java.util.Calendar;
 
 /**
@@ -44,14 +46,22 @@ public class FragmentAdd extends Fragment {
             @Override
 
             public void onClick(View v) {
-                setAlarm(v);
+                try {
+                    setAlarm(v);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setAlarm(v);
+                try {
+                    setAlarm(v);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -64,9 +74,10 @@ public class FragmentAdd extends Fragment {
         return rootView;
     }
 
-    private void setAlarm(View view) {
+    private void setAlarm(View view) throws ParseException {
 
         if (view == btnAlarm && this.alarmIsSet == false) {
+
 
             Intent intent = new Intent(getActivity(), AlarmReceiver.class);
 
@@ -82,21 +93,23 @@ public class FragmentAdd extends Fragment {
             this.alarmIsSet = true;
             this.sample.setText(now.getTime().toString());
             Toast.makeText(getActivity(), "Alarm is set", Toast.LENGTH_LONG).show();
+
+
+
         }
 
-        if (view == btnCancel && this.alarmIsSet == true) {
+        if (view == btnCancel) {
             this.alarmIsSet = false;
 
-            alarmManager.cancel(pendingIntent);
+            //alarmManager.cancel(pendingIntent);
 
+            Intent sampleIntent = new Intent(getActivity(), AlarmReceiver.class);
+            PendingIntent newPendingIntent = PendingIntent.getBroadcast(getActivity(), 0, sampleIntent, 0);
+            newPendingIntent.cancel();
             Toast.makeText(getContext(), "Canceled", Toast.LENGTH_LONG).show();
         }
 
-        if(view == btnCancel && this.alarmIsSet == false) {
 
-            Toast.makeText(getContext(), "Canceled", Toast.LENGTH_LONG).show();
-            AlarmService.ringtone.stop();
-        }
     }
 
 

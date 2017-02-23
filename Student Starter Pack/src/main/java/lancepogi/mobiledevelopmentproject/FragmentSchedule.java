@@ -31,39 +31,74 @@ public class FragmentSchedule extends Fragment {
 
         DBHelper dbHelper = new DBHelper(getActivity().getApplicationContext());
         //List<Subject> subjectList = dbHelper.getAllSubject();
-        List<Subject> subjectList = dbHelper.getSubjectOn("monday");
+        List<Subject> subjectList = dbHelper.getAllSubject();
         List<Alarm> alarmList = dbHelper.getAlarm();
 
 
 
         TableLayout sample = (TableLayout) rootView.findViewById(R.id.sampleTable);
         TableLayout.LayoutParams sampleParams = new TableLayout.LayoutParams();
+
+        TableRow.LayoutParams spaceParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT,1.0f);
+        spaceParams.height = 150;
+
         //sampleParams.setMargins(2,2,2,2);
         //sampleParams.weight = 1;
+
+        //baguhin mo to
+        TableRow.LayoutParams subjHeaderParams = new TableRow.LayoutParams();
+        subjHeaderParams.setMargins(2,2,2,2);
+        subjHeaderParams.weight = 1;
+        subjHeaderParams.height = 100;
+
 
         TableRow.LayoutParams tableParams = new TableRow.LayoutParams();
         tableParams.setMargins(2,2,2,2);
         tableParams.weight = 1;
+        tableParams.height = 50;
 
-        for (Alarm alarm:alarmList) {
-            TableRow sampleRow = new TableRow(getActivity());
-            sampleRow.addView(newTextView(alarm.getDay()), tableParams);
-            sampleRow.addView(newTextView(alarm.getTime()), tableParams);
-            sampleRow.addView(newTextView(alarm.getType()), tableParams);
-            sample.addView(sampleRow, sampleParams);
-        }
+
+
+        TableRow headerSubject = new TableRow(getActivity());
+        headerSubject.addView(newTextView("Subject Schedule"), subjHeaderParams);
+        sample.addView(headerSubject, sampleParams);
+
+        TableRow headerRowSubject = new TableRow(getActivity());
+        headerRowSubject.addView(newTextView("Subject"), subjHeaderParams);
+        headerRowSubject.addView(newTextView("Units"), subjHeaderParams);
+        headerRowSubject.addView(newTextView("Time"), subjHeaderParams);
+        headerRowSubject.addView(newTextView("Day"), subjHeaderParams);
+        sample.addView(headerRowSubject, sampleParams);
+
 
         for (Subject subj:subjectList) {
             TableRow sampleRow = new TableRow(getActivity());
             sampleRow.addView(newTextView(subj.getSubjName()), tableParams);
             sampleRow.addView(newTextView(subj.getUnits()), tableParams);
-            sampleRow.addView(newTextView(subj.getStartTime()), tableParams);
-            sampleRow.addView(newTextView(subj.getEndTime()), tableParams);
-            sampleRow.addView(newTextView(String.valueOf(subj.getDay("monday"))), tableParams);
-            sampleRow.addView(newTextView(String.valueOf(subj.getDay("tuesday"))), tableParams);
+            sampleRow.addView(newTextView(subj.getStartTime() + " - " + subj.getEndTime()), tableParams);
+            sampleRow.addView(newTextView(subj.getTotalDay()), tableParams);
             sample.addView(sampleRow, sampleParams);
         }
 
+        TableRow spaceRow = new TableRow(getActivity());
+        spaceRow.addView(newTextView(""), spaceParams);
+        sample.addView(spaceRow, sampleParams);
+
+        TableRow headerAlarm = new TableRow(getActivity());
+        headerAlarm.addView(newTextView("Alarms"), subjHeaderParams);
+        sample.addView(headerAlarm, sampleParams);
+
+        TableRow headerRowAlarm = new TableRow(getActivity());
+        headerRowAlarm.addView(newTextView("Day"), subjHeaderParams);
+        headerRowAlarm.addView(newTextView("Time"), subjHeaderParams);
+        sample.addView(headerRowAlarm, sampleParams);
+
+        for (Alarm alarm:alarmList) {
+            TableRow sampleRow = new TableRow(getActivity());
+            sampleRow.addView(newTextView(alarm.getDay()), tableParams);
+            sampleRow.addView(newTextView(alarm.getTime()), tableParams);
+            sample.addView(sampleRow, sampleParams);
+        }
 
 
         return rootView;

@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     protected void onNewIntent(Intent intent) {
         if(AlarmService.ringtone != null) {

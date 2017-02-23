@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 
 import java.io.File;
+import java.io.InterruptedIOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -224,6 +225,16 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         db.close();
     }
 
+    public  void newNoClass(NoClass noClass) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_DAY, noClass.getDay());
+        values.put(KEY_DESC, noClass.getDesc());
+        db.insert(TABLE_NO_CLASS, null, values);
+        db.close();
+    }
+
+
     public Semester getSemester() {
         String selectQuery = "SELECT * FROM " + TABLE_SEMESTER;
 
@@ -423,6 +434,36 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         }
 
         return alarmList;
+    }
+
+    public Alarm getAlarmOn(String day) {
+
+        Alarm alarm = new Alarm();
+//for testing muna        String selectQuery = "SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_DAY + " = '" + day + "' AND " + KEY_ALARM_TYPE + " = 'alarm'";
+        String selectQuery = "SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_ALARM_TYPE + " = 'alarm'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        alarm.setId(Integer.parseInt(cursor.getString(0)));
+        alarm.setTime(cursor.getString(1));
+        alarm.setType("alarm");
+        alarm.setDay(day);
+
+        return alarm;
+    }
+
+    public  boolean isNoClass(String day) {
+
+        String selectQuery = "SELECT COUNT(*) FROM " + TABLE_NO_CLASS + " WHERE " + KEY_DAY + " = '" + day + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        if (Integer.parseInt(cursor.getString(0)) == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public int updateSemesterAlarm(Semester semester) throws ParseException {

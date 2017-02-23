@@ -17,6 +17,10 @@ public class Subject {
     private String endTime;
     private boolean isMonday, isTuesday, isWednesday, isThursday, isFriday, isSaturday = false;
 
+    private static final String[][] totalDay = {
+            {"monday", "M"}, {"tuesday", "T"}, {"wednesday", "W"}, {"thursday", "Th"}, {"friday", "F"}, {"saturday", "S"}
+    };
+
     public Subject() {
 
     }
@@ -160,6 +164,27 @@ public class Subject {
             default:
                 return 0;
         }
+    }
+
+    public String getTotalDay() {
+
+        String finalString = "";
+
+        for (int i = 0; i < 6; i++) {   //6 because sunday isnt included in a week
+            int bit = getDay(totalDay[i][0]);
+
+            if(bit == 1 && i == 0) {
+                finalString = finalString + totalDay[i][1];
+            } else if(bit == 1 && i != 0) {
+                if (finalString == "") {
+                    finalString = totalDay[i][1];
+                } else {
+                    finalString = finalString + "-" + totalDay[i][1];
+                }
+
+            }
+        }
+        return finalString;
     }
 
     public int getBit(boolean bool) {
