@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="Delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvDeleteTitle"
+        android:textSize="25dp"
+        android:layout_marginTop="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_x="13dp"
+        android:layout_y="14dp" />
+
+    <Spinner
+        android:layout_width="231dp"
+        android:layout_height="50dp"
+        android:layout_x="14dp"
+        android:layout_y="61dp"
+        android:id="@+id/spChoose" />
+
+    <Button
+        android:text="Submit"
+        android:layout_width="142dp"
+        android:layout_height="wrap_content"
+        android:layout_x="14dp"
+        android:layout_y="127dp"
+        android:id="@+id/btnSubmit" />
+
+</AbsoluteLayout>

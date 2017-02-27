@@ -43,6 +43,7 @@ public class FragmentSummary extends android.support.v4.app.Fragment {
         GridView gvSample = (GridView) rootView.findViewById(R.id.gvSample);
 
 
+
         List<String> sampleList = new ArrayList<String>();
         ArrayAdapter<String> aa = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, sampleList);
 

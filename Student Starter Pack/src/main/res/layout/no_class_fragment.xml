@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="No Class"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:textSize="25dp"
+        android:layout_marginTop="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_x="72dp"
+        android:layout_y="43dp" />
+
+    <Button
+        android:text="Submit"
+        android:layout_width="132dp"
+        android:layout_height="59dp"
+        android:layout_x="27dp"
+        android:layout_y="412dp"
+        android:id="@+id/btnSubmit" />
+
+    <EditText
+        android:layout_width="248dp"
+        android:layout_height="146dp"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:layout_x="12dp"
+        android:layout_y="206dp"
+        android:id="@+id/etDesc"
+        android:hint="Enter No-Class Description here" />
+
+    <Spinner
+        android:layout_width="279dp"
+        android:layout_height="wrap_content"
+        android:layout_x="5dp"
+        android:layout_y="137dp"
+        android:entries="@array/days"
+        android:id="@+id/spDays" />
+
+</AbsoluteLayout>

@@ -52,7 +52,7 @@ public class AlarmScheduler {
 
 
     public void setAllAlarm(List<Alarm> alarmList) throws ParseException {
-
+    /* for testing purpose
         for (Alarm alarm:alarmList) {
 
             int pendingIntentId = alarm.getId() + 1;    //+1 lagi to avoid 0. zero is for notifbuilder pendingintent only
@@ -67,6 +67,7 @@ public class AlarmScheduler {
             //am.set(am.RTC_WAKEUP, alarmSchedule.getTimeInMillis(), alarmPendingIntent);
             am.set(am.RTC_WAKEUP, testCal.getTimeInMillis(), alarmPendingIntent);
         }
+        */
     }
 
     public void setNextWeekAlarm(String day) throws ParseException {
@@ -76,6 +77,7 @@ public class AlarmScheduler {
 
         int pendingIntentId = alarm.getId() + 1;    //+1 lagi to avoid 0. zero is for notifbuilder pendingintent only
         Calendar alarmSchedule = getAlarmSchedule(alarm);
+
         Calendar testCal = Calendar.getInstance();
         testCal.add(Calendar.SECOND, 15);
 
@@ -83,8 +85,8 @@ public class AlarmScheduler {
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(this.context, pendingIntentId, alarmIntent, 0);
 
         AlarmManager am = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
-        //am.set(am.RTC_WAKEUP, alarmSchedule.getTimeInMillis(), alarmPendingIntent);
-        am.set(am.RTC_WAKEUP, testCal.getTimeInMillis(), alarmPendingIntent);
+        am.set(am.RTC_WAKEUP, alarmSchedule.getTimeInMillis(), alarmPendingIntent);
+        //am.set(am.RTC_WAKEUP, testCal.getTimeInMillis(), alarmPendingIntent);
 
     }
 

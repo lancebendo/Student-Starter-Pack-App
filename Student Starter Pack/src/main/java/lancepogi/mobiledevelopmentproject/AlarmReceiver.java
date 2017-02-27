@@ -21,7 +21,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Toast.makeText(context, "eto startup", Toast.LENGTH_LONG).show();
             Intent serviceIntent = new Intent(context, AlarmService.class);
             context.startService(serviceIntent);
-            FragmentAdd.alarmIsSet = false;
+
 
     }
 

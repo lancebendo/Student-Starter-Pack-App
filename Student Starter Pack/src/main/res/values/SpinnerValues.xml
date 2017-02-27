@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinnerTodo">
+        <item>Choose what to do?</item>
+        <item>Add</item>
+        <item>Delete</item>
+    </string-array>
+
+    <string-array name="spinnerTowhat">
+        <item>Do on what?</item>
+        <item>Subject</item>
+        <item>Assignment</item>
+        <item>Activity</item>
+        <item>No Class</item>
+    </string-array>
+
+    <string-array name="days">
+        <item>Choose a day:</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
+
+</resources>

@@ -1,21 +1,17 @@
 package lancepogi.mobiledevelopmentproject;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.util.Calendar;
 
 /**
  * Created by Lance on 12/23/2016.
@@ -23,95 +19,72 @@ import java.util.Calendar;
 
 public class FragmentAdd extends Fragment {
 
-    Button btnAlarm, btnCancel, btnNotif;
+    Spinner spTodo;
+    Spinner spTowhat;
 
-    TextView sample;
-
-    AlarmManager alarmManager;
-    PendingIntent pendingIntent;
-
-    static boolean alarmIsSet = false;
+    private static int selectedPosition = 0;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.add_fragment,container,false);
-        this.sample = (TextView) rootView.findViewById(R.id.tvSampleAlarm);
-        this.btnAlarm = (Button) rootView.findViewById(R.id.btnAlarm);
-        this.btnCancel = (Button) rootView.findViewById(R.id.btnCancelAlarm);
-        this.btnNotif = (Button) rootView.findViewById(R.id.btnNotifs);
 
+        final View rootView = inflater.inflate(R.layout.add_fragment,container,false);
 
-        btnAlarm.setOnClickListener(new View.OnClickListener() {
+        Toast.makeText(getActivity(), "sa create", Toast.LENGTH_LONG).show();
+
+        this.spTodo = (Spinner) rootView.findViewById(R.id.spTodo);
+        this.spTowhat = (Spinner) rootView.findViewById(R.id.spTowhat);
+        spTowhat.setVisibility(View.INVISIBLE);
+
+        spTodo.setSelection(selectedPosition);
+        Button btn = (Button) rootView.findViewById(R.id.btnGo);
+
+        btn.setOnClickListener(new View.OnClickListener() {
             @Override
-
             public void onClick(View v) {
-                try {
-                    setAlarm(v);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                //index of toDo: 1 for add, 2 for delete
+                //index of toWhat: 1 for subject, 2 for assignment, 3 for activity, 4 for no class
+
+                Bundle args = new Bundle();
+
+                int[] spinnerIndex = {0, 0};
+
+                if(spTodo.getSelectedItemPosition() != 0 && spTowhat.getSelectedItemPosition() != 0) {
+                    spinnerIndex[0] = spTodo.getSelectedItemPosition();
+                    spinnerIndex[1] = spTowhat.getSelectedItemPosition();
+                    DialogAdapter da = new DialogAdapter();
+                    args.putIntArray("index", spinnerIndex);
+                    da.setArguments(args);
+                    da.show(getActivity().getFragmentManager(), "asd");
                 }
+
             }
         });
 
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    setAlarm(v);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        spTodo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-        btnNotif.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                //index: 1 for add, 2 for delete
+                if (position != 0) {
+                    selectedPosition = position;
+                    spTowhat.setVisibility(View.VISIBLE);
+                }
+                if (position == 0) {
+
+                    spTowhat.setVisibility(View.INVISIBLE);
+                }
+
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
         return rootView;
     }
-
-    private void setAlarm(View view) throws ParseException {
-
-        if (view == btnAlarm && this.alarmIsSet == false) {
-
-
-            Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-
-            this.pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
-
-            Calendar now = Calendar.getInstance();
-            //long time = now.getTimeInMillis() + 60000;
-            now.setTimeInMillis(now.getTimeInMillis() + 5000);
-            //now.set(Calendar.SECOND, 0);
-
-            this.alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), pendingIntent);
-            this.alarmIsSet = true;
-            this.sample.setText(now.getTime().toString());
-            Toast.makeText(getActivity(), "Alarm is set", Toast.LENGTH_LONG).show();
-
-
-
-        }
-
-        if (view == btnCancel) {
-            this.alarmIsSet = false;
-
-            //alarmManager.cancel(pendingIntent);
-
-            Intent sampleIntent = new Intent(getActivity(), AlarmReceiver.class);
-            PendingIntent newPendingIntent = PendingIntent.getBroadcast(getActivity(), 0, sampleIntent, 0);
-            newPendingIntent.cancel();
-            Toast.makeText(getContext(), "Canceled", Toast.LENGTH_LONG).show();
-        }
-
-
-    }
-
 
 
 

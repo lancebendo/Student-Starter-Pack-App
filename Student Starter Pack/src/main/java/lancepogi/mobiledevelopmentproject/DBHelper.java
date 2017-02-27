@@ -270,7 +270,46 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
-        if (Integer.parseInt(cursor.getString(0)) == 1) {
+        if (Integer.parseInt(cursor.getString(0)) != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isAssignmentExisting() {
+        String selectQuery = "SELECT COUNT(*) as bilang FROM " + TABLE_ASSIGNMENT;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        if (Integer.parseInt(cursor.getString(0)) != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isActivityExisting() {
+        String selectQuery = "SELECT COUNT(*) as bilang FROM " + TABLE_SCHOOL_ACTIVITY;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        if (Integer.parseInt(cursor.getString(0)) != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isNoClassExisting() {
+        String selectQuery = "SELECT COUNT(*) as bilang FROM " + TABLE_NO_CLASS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        if (Integer.parseInt(cursor.getString(0)) != 0) {
             return true;
         } else {
             return false;
@@ -415,6 +454,26 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         return schoolActivityList;
     }
 
+    public List<NoClass> getNoClass() {
+        List<NoClass> noClassList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_NO_CLASS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                NoClass noClass = new NoClass();
+                noClass.setId(Integer.parseInt(cursor.getString(0)));
+                noClass.setDay(cursor.getString(1));
+                noClass.setDesc(cursor.getString(2));
+                noClassList.add(noClass);
+            } while(cursor.moveToNext());
+        }
+
+        return noClassList;
+    }
+
     public List<Alarm> getAlarm() {
         List<Alarm> alarmList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_ALARM;
@@ -451,6 +510,34 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         alarm.setDay(day);
 
         return alarm;
+    }
+
+    public List<String> getIdList(String table) {
+        List<String> idList = new ArrayList<>();
+        String selectQuery = "Select * from " + table;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if(cursor.moveToFirst()) {
+            do {
+                idList.add(cursor.getString(0) + " " + cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+
+        return idList;
+    }
+
+    public List<String> getSubjectName() {
+        List<String> subjectList = new ArrayList<>();
+        String selectQuery = "Select * from " + TABLE_SUBJECT;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if(cursor.moveToFirst()) {
+            do {
+                subjectList.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+
+        return subjectList;
     }
 
     public  boolean isNoClass(String day) {
@@ -525,6 +612,11 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
     public void removeSubject(String subjectName) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_SUBJECT + " WHERE " + KEY_SUBJECT_NAME + " = '" + subjectName + "'");
+    }
+
+    public void removeId(String id,String tableName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + tableName + " WHERE " + KEY_ID + " = " + id);
     }
 
 

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text=""
+        android:textSize="20dp"
+        android:hint="Enter activity here"
+        android:ems="10"
+        android:id="@+id/etActivityName"
+        android:layout_below="@+id/textView2"
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_alignStart="@+id/textView3"
+        android:layout_marginTop="20dp"
+        android:layout_x="13dp"
+        android:layout_y="125dp" />
+
+    <EditText
+        android:layout_width="248dp"
+        android:layout_height="146dp"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:layout_x="11dp"
+        android:layout_y="176dp"
+        android:id="@+id/etDesc"
+        android:hint="Enter Activity Description here" />
+
+    <Button
+        android:text="Deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="24dp"
+        android:layout_y="328dp"
+        android:id="@+id/btnDeadline"
+        android:layout_alignBaseline="@+id/etDesc"
+        android:layout_alignBottom="@+id/etDesc"
+        android:layout_alignLeft="@+id/etDeadline"
+        android:layout_alignStart="@+id/etDeadline" />
+
+    <EditText
+        android:layout_width="172dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_x="119dp"
+        android:layout_y="333dp"
+        android:id="@+id/etDeadline"
+        android:text="Deadline Time"
+        android:editable="false"
+        android:clickable="false"
+        android:cursorVisible="true"
+        android:focusable="false"
+        android:layout_below="@+id/textView3"
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_alignStart="@+id/textView3"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:text="Activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:textSize="25dp"
+        android:layout_marginTop="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_x="72dp"
+        android:layout_y="43dp" />
+
+    <Button
+        android:text="Submit"
+        android:layout_width="132dp"
+        android:layout_height="59dp"
+        android:layout_x="27dp"
+        android:layout_y="412dp"
+        android:id="@+id/btnSubmit" />
+
+    <TextView
+        android:text="Activity Name:"
+        android:textSize="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="26dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="30dp"
+        android:id="@+id/textView2"
+        android:layout_x="17dp"
+        android:layout_y="96dp" />
+
+</AbsoluteLayout>

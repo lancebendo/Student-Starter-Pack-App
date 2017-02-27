@@ -1,21 +1,27 @@
 package lancepogi.mobiledevelopmentproject;
 
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 /**
  * Created by Lance on 12/24/2016.
  */
 
-public class PagerAdapterClass extends FragmentPagerAdapter {
-
+public class PagerAdapterClass extends FragmentStatePagerAdapter {
 
 
     public PagerAdapterClass(FragmentManager fm) {
 
         super(fm);
+
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
 
     }
 
@@ -30,6 +36,7 @@ public class PagerAdapterClass extends FragmentPagerAdapter {
                 return schedule;
             case 2:
                 FragmentAdd add = new FragmentAdd();
+
                 return add;
             default:
                 return null;

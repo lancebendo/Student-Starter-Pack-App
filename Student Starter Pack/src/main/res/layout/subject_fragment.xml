@@ -23,7 +23,7 @@
         android:ems="10"
         android:layout_x="12dp"
         android:layout_y="23dp"
-        android:id="@+id/etSubjName"
+        android:id="@+id/etSubjectName"
         android:textColor="?android:attr/textColorSecondary"
         android:hint="Subject Name" />
 
@@ -42,20 +42,6 @@
         android:layout_x="21dp"
         android:layout_y="228dp"
         android:id="@+id/btnEndTime" />
-
-    <EditText
-        android:layout_width="106dp"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_x="134dp"
-        android:layout_y="160dp"
-        android:id="@+id/etStart"
-        android:text="start time"
-        android:editable="false"
-        android:clickable="false"
-        android:cursorVisible="true"
-        android:focusable="false"/>
 
     <EditText
         android:layout_width="104dp"
@@ -126,5 +112,19 @@
         android:layout_x="142dp"
         android:layout_y="380dp"
         android:id="@+id/cbSaturday" />
+
+    <EditText
+        android:layout_width="106dp"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_x="134dp"
+        android:layout_y="161dp"
+        android:id="@+id/etDesc"
+        android:text="start time"
+        android:editable="false"
+        android:clickable="false"
+        android:cursorVisible="true"
+        android:focusable="false"/>
 
 </AbsoluteLayout>
