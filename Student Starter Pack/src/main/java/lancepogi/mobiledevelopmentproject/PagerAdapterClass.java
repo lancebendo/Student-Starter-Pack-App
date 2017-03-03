@@ -56,7 +56,7 @@ public class PagerAdapterClass extends FragmentStatePagerAdapter {
             case 1:
                 return "SCHEDULE";
             case 2:
-                return "ADD";
+                return "ADD/DELETE";
             default:
                 return null;
         }

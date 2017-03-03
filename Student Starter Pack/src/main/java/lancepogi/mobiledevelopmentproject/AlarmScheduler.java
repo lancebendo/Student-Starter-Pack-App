@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,11 +20,14 @@ import java.util.List;
 public class AlarmScheduler {
 
     public static final String[] dayArray = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
-    private Context context;
+    private static Context context;
 
+    long subtractAlarmTime;
 
     public AlarmScheduler(Context context) {
         this.context = context;
+        DBHelper dbHelper = new DBHelper(context);
+        this.subtractAlarmTime = dbHelper.getSemesterSubtractAlarm() * 3600000;
     }
 
     public void setAlarmSchedule() throws ParseException {
@@ -45,14 +49,55 @@ public class AlarmScheduler {
 
             }
             if (subjectLoop.size() != 0) {
-                dbHelper.newAlarm(getAlarm(earliest, day, "alarm"));
+                dbHelper.newAlarm(getAlarm(earliest - subtractAlarmTime, day, "alarm"));
             }
         }
     }
 
+    public void updateAlarmSchedule() throws ParseException {
+        DBHelper dbHelper = new DBHelper(this.context);
+        for (String day:dayArray) {
+
+            List<Subject> subjectLoop = dbHelper.getSubjectOn(day);
+            long earliest = 0;
+
+            for (int i = 0; i < subjectLoop.size(); i++) {
+
+                Subject tempSubject = subjectLoop.get(i);
+
+                if (i == 0) {
+                    earliest = tempSubject.getStartMilliTime();
+                } else {
+                    earliest = getLong(earliest, tempSubject.getStartMilliTime());
+                }
+
+            }
+
+            if (subjectLoop.size() != 0) {
+                if(dbHelper.isAlarmExistingOn(day) == false) {
+                    dbHelper.newAlarm(getAlarm(earliest - subtractAlarmTime, day, "alarm"));
+                } else {
+                    Alarm newAlarm = getAlarm(earliest - subtractAlarmTime, day, "alarm");
+                    Alarm existingAlarm = dbHelper.getAlarmOn(day);
+                    if (newAlarm.getTime() != existingAlarm.getTime()) {
+                        existingAlarm.setTime(newAlarm.getTime());
+                        dbHelper.updateAlarm(existingAlarm);
+                    }
+                }
+            } else {
+                if(dbHelper.isAlarmExistingOn(day) == true) {
+                    dbHelper.removeAlarm(dbHelper.getAlarmOn(day));
+                } else {
+
+                }
+            }
+        }
+
+
+    }
 
     public void setAllAlarm(List<Alarm> alarmList) throws ParseException {
-    /* for testing purpose
+    /* for testing purpose*/
         for (Alarm alarm:alarmList) {
 
             int pendingIntentId = alarm.getId() + 1;    //+1 lagi to avoid 0. zero is for notifbuilder pendingintent only
@@ -64,10 +109,10 @@ public class AlarmScheduler {
             PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(this.context, pendingIntentId, alarmIntent, 0);
 
             AlarmManager am = (AlarmManager) this.context.getSystemService(Context.ALARM_SERVICE);
-            //am.set(am.RTC_WAKEUP, alarmSchedule.getTimeInMillis(), alarmPendingIntent);
-            am.set(am.RTC_WAKEUP, testCal.getTimeInMillis(), alarmPendingIntent);
+            am.set(am.RTC_WAKEUP, alarmSchedule.getTimeInMillis(), alarmPendingIntent);
+            //am.set(am.RTC_WAKEUP, testCal.getTimeInMillis(), alarmPendingIntent);
         }
-        */
+
     }
 
     public void setNextWeekAlarm(String day) throws ParseException {
@@ -90,11 +135,24 @@ public class AlarmScheduler {
 
     }
 
+    public void cancelAllAlarm() {
+        DBHelper dbHelper = new DBHelper(context);
+        List<Alarm> alarmList = dbHelper.getAlarm();
+
+        for (Alarm alarm:alarmList) {
+            int pendingIntentId = alarm.getId() + 1;
+
+            Intent sampleIntent = new Intent(this.context, AlarmReceiver.class);
+            PendingIntent newPendingIntent = PendingIntent.getBroadcast(this.context, pendingIntentId, sampleIntent, 0);
+
+            newPendingIntent.cancel();
+        }
+    }
 
 
     public void cancelAlarm(Alarm alarm) {
 
-        int pendingIntentId = alarm.getId();
+        int pendingIntentId = alarm.getId() + 1;
 
         Intent sampleIntent = new Intent(this.context, AlarmReceiver.class);
         PendingIntent newPendingIntent = PendingIntent.getBroadcast(this.context, pendingIntentId, sampleIntent, 0);
@@ -158,7 +216,8 @@ public class AlarmScheduler {
     public static int getIndex(String item) {
         int index = 1;	//index begins in 1 because 0 is considered as sunday
         for (String str : dayArray) {
-            if (str == item) {
+            if (str.matches(item)) {
+                Log.d("INDEXLOOP", str + " " + item + index);
                 break;
             }
             index++;
@@ -176,8 +235,11 @@ public class AlarmScheduler {
         Date tempDate = dt.parse(alarm.getTime());
         Calendar c = Calendar.getInstance();
 
-        int[] sched = {0,0,0};	//{day, hour, minute, second}   the second index should always be zero!
 
+
+
+
+        int[] sched = {0,0,0};	//{day, hour, minute, second}   the second index should always be zero!
         String day = alarm.getDay();
         int targetMinute = tempDate.getMinutes();
         int targetHour = tempDate.getHours();

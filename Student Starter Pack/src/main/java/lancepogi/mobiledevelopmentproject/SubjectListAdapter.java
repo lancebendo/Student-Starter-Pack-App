@@ -50,13 +50,11 @@ public class SubjectListAdapter extends ArrayAdapter<Subject> implements Seriali
             holder = new SubjectHolder();
             holder.imgRemove = (ImageButton) convertView.findViewById(R.id.removeSubject);
             holder.txtSubj = (TextView) convertView.findViewById(R.id.subjectName);
-            holder.txtUnits = (TextView) convertView.findViewById(R.id.subjectUnit);
-
+            holder.txtDays = (TextView) convertView.findViewById(R.id.subjectDay);
         final Subject newSubject = subjectList.get(position);
 
         holder.txtSubj.setText(newSubject.getSubjName());
-        holder.txtUnits.setText(newSubject.getDayArray());
-
+        holder.txtDays.setText(newSubject.getTotalDay());
 
 
         holder.imgRemove.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +98,6 @@ public class SubjectListAdapter extends ArrayAdapter<Subject> implements Seriali
     {
         ImageButton imgRemove;
         TextView txtSubj;
-        TextView txtUnits;
+        TextView txtDays;
     } }
 

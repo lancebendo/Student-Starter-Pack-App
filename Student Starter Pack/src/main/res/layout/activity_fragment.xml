@@ -70,14 +70,6 @@
         android:layout_x="72dp"
         android:layout_y="43dp" />
 
-    <Button
-        android:text="Submit"
-        android:layout_width="132dp"
-        android:layout_height="59dp"
-        android:layout_x="27dp"
-        android:layout_y="412dp"
-        android:id="@+id/btnSubmit" />
-
     <TextView
         android:text="Activity Name:"
         android:textSize="20dp"
@@ -92,5 +84,13 @@
         android:id="@+id/textView2"
         android:layout_x="17dp"
         android:layout_y="96dp" />
+
+    <Button
+        android:text="Submit"
+        android:layout_width="132dp"
+        android:layout_height="59dp"
+        android:layout_x="62dp"
+        android:layout_y="412dp"
+        android:id="@+id/btnSubmit" />
 
 </AbsoluteLayout>

@@ -3,33 +3,9 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:text="Apply"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="25dp"
-        android:layout_y="430dp"
-        android:id="@+id/btnApply" />
-
-    <Button
-        android:text="Cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_x="127dp"
-        android:layout_y="432dp"
-        android:id="@+id/btnCancel" />
-
-    <Button
-        android:text="Reset this App?"
-        android:layout_width="197dp"
-        android:layout_height="wrap_content"
-        android:layout_x="24dp"
-        android:layout_y="340dp"
-        android:id="@+id/btnReset" />
-
     <TextView
         android:text="Hour/s before the first class of the day to trigger the alarm:"
-        android:layout_width="200dp"
+        android:layout_width="251dp"
         android:layout_height="wrap_content"
         android:id="@+id/textView4"
         android:textSize="23sp"
@@ -42,15 +18,60 @@
         android:layout_x="15dp"
         android:layout_y="17dp" />
 
-    <EditText
-        android:layout_width="89dp"
+    <Button
+        android:text="Reset this App?"
+        android:layout_width="197dp"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="HOUR"
-        android:ems="10"
-        android:layout_x="218dp"
-        android:layout_y="45dp"
-        android:id="@+id/etHourAlarm"
-        android:fontFamily="sans-serif" />
+        android:layout_x="36dp"
+        android:layout_y="340dp"
+        android:id="@+id/btnReset" />
+
+    <Button
+        android:text="Apply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="29dp"
+        android:layout_y="433dp"
+        android:id="@+id/btnApply" />
+
+    <Button
+        android:text="Cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="151dp"
+        android:layout_y="433dp"
+        android:id="@+id/btnCancel" />
+
+    <Spinner
+        android:layout_width="148dp"
+        android:layout_height="53dp"
+        android:layout_x="51dp"
+        android:layout_y="112dp"
+        android:id="@+id/spHours"
+        android:entries="@array/alarmSubtract"
+        />
+
+    <TextView
+        android:text="Current Semestral Period:"
+        android:layout_width="251dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView11"
+        android:textSize="23sp"
+        android:layout_marginTop="75dp"
+        android:filterTouchesWhenObscured="true"
+        android:textColor="@android:color/black"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/tvSemester"
+        android:layout_alignStart="@+id/tvSemester"
+        android:layout_x="5dp"
+        android:layout_y="161dp" />
+
+    <Spinner
+        android:layout_width="105dp"
+        android:layout_height="41dp"
+        android:layout_x="59dp"
+        android:layout_y="220dp"
+        android:id="@+id/spSem"
+        android:entries="@array/semester" />
 
 </AbsoluteLayout>

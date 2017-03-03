@@ -10,8 +10,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.io.File;
 import java.io.InterruptedIOException;
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -50,6 +53,7 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
     private static final String KEY_STUDENT_NAME = "student_name";
     private static final String KEY_START_DATE = "start_date";
     private static final String KEY_END_DATE = "end_date";
+    private static final String KEY_SEM = "semester";
     private static final String KEY_DEFAULT_ALARM = "default_alarm";
     private static final String KEY_DEFAULT_NOTIF = "default_notif";
     private static final String KEY_ISSET = "is_set";
@@ -84,6 +88,8 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
     //day
     //desc
 
+    private static final String[] days = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+
     public DBHelper(Context context) {
 
 
@@ -95,7 +101,60 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        createTable();
+        String CREATE_SEMESTER_TABLE = " CREATE TABLE " + TABLE_SEMESTER + " ("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_STUDENT_NAME + " TEXT, "
+                + KEY_START_DATE + " TEXT, "
+                + KEY_END_DATE + " TEXT, "
+                + KEY_SEM + " TEXT, "
+                + KEY_DEFAULT_ALARM + " TEXT, "
+                + KEY_DEFAULT_NOTIF + " TEXT, "
+                + KEY_ISSET + " INT DEFAULT 0)";
+
+        String CREATE_SUBJECT_TABLE = " CREATE TABLE " + TABLE_SUBJECT + " ("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_SUBJECT_NAME + " TEXT, "
+                + KEY_UNITS + " INTEGER, "
+                + KEY_START_TIME + " TEXT, "
+                + KEY_END_TIME + " TEXT, "
+                + KEY_MONDAY + " INTEGER DEFAULT 0, "
+                + KEY_TUESDAY + " INTEGER DEFAULT 0, "
+                + KEY_WEDNESDAY + " INTEGER DEFAULT 0, "
+                + KEY_THURSDAY + " INTEGER DEFAULT 0, "
+                + KEY_FRIDAY + " INTEGER DEFAULT 0, "
+                + KEY_SATURDAY + " INTEGER DEFAULT 0)";
+
+        String CREATE_ASSIGNMENT_TABLE = " CREATE TABLE " + TABLE_ASSIGNMENT + " ("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_SUBJECT_NAME + " TEXT, "
+                + KEY_DESC + " TEXT, "
+                + KEY_IS_DONE + " INTEGER DEFAULT 0, "
+                + KEY_DEADLINE + " TEXT)";
+
+        String CREATE_ACTIVITY_TABLE = " CREATE TABLE " + TABLE_SCHOOL_ACTIVITY + " ("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_ACTIVITY_NAME + " TEXT, "
+                + KEY_DESC + " TEXT, "
+                + KEY_IS_DONE + " INTEGER DEFAULT 0, "
+                + KEY_DEADLINE + " TEXT)";
+
+        String CREATE_ALARM_TABLE = " CREATE TABLE " + TABLE_ALARM + " ("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_ALARM_TIME + " TEXT , "
+                + KEY_ALARM_TYPE + " TEXT, "
+                + KEY_DAY + " TEXT)";
+
+        String CREATE_NOCLASS_TABLE = " CREATE TABLE " + TABLE_NO_CLASS + " ("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_DAY + " TEXT, "
+                + KEY_DESC + " TEXT)";
+
+        db.execSQL(CREATE_SEMESTER_TABLE);
+        db.execSQL(CREATE_SUBJECT_TABLE);
+        db.execSQL(CREATE_ASSIGNMENT_TABLE);
+        db.execSQL(CREATE_ACTIVITY_TABLE);
+        db.execSQL(CREATE_ALARM_TABLE);
+        db.execSQL(CREATE_NOCLASS_TABLE);
 
     }
 
@@ -112,6 +171,7 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
                 + KEY_STUDENT_NAME + " TEXT, "
                 + KEY_START_DATE + " TEXT, "
                 + KEY_END_DATE + " TEXT, "
+                + KEY_SEM + " TEXT, "
                 + KEY_DEFAULT_ALARM + " TEXT, "
                 + KEY_DEFAULT_NOTIF + " TEXT, "
                 + KEY_ISSET + " INT DEFAULT 0)";
@@ -169,6 +229,7 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         values.put(KEY_STUDENT_NAME, sem.getStudName());
         values.put(KEY_START_DATE, sem.getStartDateString());
         values.put(KEY_END_DATE, sem.getEndDateString());
+        values.put(KEY_SEM, sem.getSemester());
         values.put(KEY_DEFAULT_ALARM, "2");
         values.put(KEY_DEFAULT_NOTIF, "20:00");
         values.put(KEY_ISSET, 0);
@@ -243,16 +304,26 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         Semester sem = new Semester();
         if(cursor.moveToFirst()) {
             do {
+                sem.setId(cursor.getString(0));
                 sem.setStudName(cursor.getString(1));
                 sem.setStartDate(cursor.getString(2));
                 sem.setEndDate(cursor.getString(3));
-                sem.setDefaultAlarm(cursor.getString(4));
-                sem.setDefaultNotif(cursor.getString(5));
-                sem.setIsSet(cursor.getString(6));
+                sem.setSemester(cursor.getString(4));
+                sem.setDefaultAlarm(cursor.getString(5));
+                sem.setDefaultNotif(cursor.getString(6));
+                sem.setIsSet(cursor.getString(7));
             } while (cursor.moveToNext());
         }
 
         return sem;
+    }
+
+    public int getSemesterSubtractAlarm() {
+        String selectQuery = "SELECT * FROM " + TABLE_SEMESTER;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        return Integer.parseInt(cursor.getString(5));
     }
 
     public String countSemester() {
@@ -262,6 +333,19 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         return cursor.getString(0);
+    }
+
+    public boolean isLastSubject() {
+        String selectQuery = "SELECT COUNT(*) as bilang FROM " + TABLE_SUBJECT;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        int value = Integer.valueOf(cursor.getString(0));
+        if (value == 1) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isSemesterExisting() {
@@ -314,6 +398,19 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         } else {
             return false;
         }
+    }
+
+    public boolean isAlarmExistingOn(String day) {
+        String selectQuery = "SELECT COUNT(*) as bilang FROM " + TABLE_ALARM + " WHERE " +KEY_DAY + " = '" + day + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        if (Integer.parseInt(cursor.getString(0)) != 0) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public void resetSemester() {
@@ -476,20 +573,21 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
 
     public List<Alarm> getAlarm() {
         List<Alarm> alarmList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_ALARM;
+        for (String day:days) {
+            String selectQuery = "SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_DAY + " = '" + day + "' AND " + KEY_ALARM_TYPE + " = 'alarm'";
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        if(cursor.moveToFirst()) {
-            do {
-                Alarm alarm = new Alarm();
-                alarm.setId(Integer.parseInt(cursor.getString(0)));
-                alarm.setTime(cursor.getString(1));
-                alarm.setType(cursor.getString(2));
-                alarm.setDay(cursor.getString(3));
-                alarmList.add(alarm);
-            } while(cursor.moveToNext());
+            if(cursor.moveToFirst()) {
+                do {
+                    Alarm alarm = new Alarm();
+                    alarm.setId(Integer.parseInt(cursor.getString(0)));
+                    alarm.setTime(cursor.getString(1));
+                    alarm.setType(cursor.getString(2));
+                    alarm.setDay(cursor.getString(3));
+                    alarmList.add(alarm);
+                } while(cursor.moveToNext());
+            }
         }
 
         return alarmList;
@@ -498,8 +596,8 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
     public Alarm getAlarmOn(String day) {
 
         Alarm alarm = new Alarm();
-//for testing muna        String selectQuery = "SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_DAY + " = '" + day + "' AND " + KEY_ALARM_TYPE + " = 'alarm'";
-        String selectQuery = "SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_ALARM_TYPE + " = 'alarm'";
+        String selectQuery = "SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_DAY + " = '" + day + "' AND " + KEY_ALARM_TYPE + " = 'alarm'";
+       // String selectQuery = "SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_ALARM_TYPE + " = 'alarm'";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -553,18 +651,69 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         }
     }
 
-    public int updateSemesterAlarm(Semester semester) throws ParseException {
+    public  boolean isNoClassToday() {
+
+        List<NoClass> noClassList = getNoClass();
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        for (NoClass noClass:noClassList) {
+            DateFormat ncFormat = new SimpleDateFormat("MMMM dd, yyyy");
+            try {
+                ncFormat.parse(noClass.getDay());
+                Calendar loopCalendar = ncFormat.getCalendar();
+
+                if (today.getTime().toString().matches(loopCalendar.getTime().toString())) {
+                    return true;
+                }
+
+            } catch (ParseException e) {
+                return false;
+            }
+        }
+
+
+        String selectQuery = "SELECT * FROM " + TABLE_NO_CLASS;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        if (Integer.parseInt(cursor.getString(0)) == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public void updateSemesterAlarm(Semester semester) throws ParseException {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(KEY_STUDENT_NAME, semester.getStudName());
         values.put(KEY_START_DATE, semester.getStartDateString());
         values.put(KEY_END_DATE, semester.getEndDateString());
+        values.put(KEY_SEM, semester.getSemester());
         values.put(KEY_DEFAULT_ALARM, semester.getDefaultAlarmString());
         values.put(KEY_DEFAULT_NOTIF, semester.getDefaultNotifString());
         values.put(KEY_ISSET, semester.getIsSetString());
 
-        return db.update(TABLE_SEMESTER, values, KEY_ID + " = ", new String[] {String.valueOf(semester.getID()) });
+        db.update(TABLE_SEMESTER, values, KEY_ID + " = ?", new String[] {String.valueOf(semester.getID()) });
+    }
+
+    public void updateSemesterSem(Semester semester) throws ParseException {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_STUDENT_NAME, semester.getStudName());
+        values.put(KEY_START_DATE, semester.getStartDateString());
+        values.put(KEY_END_DATE, semester.getEndDateString());
+        values.put(KEY_SEM, semester.getSemester());
+        values.put(KEY_DEFAULT_ALARM, semester.getDefaultAlarmString());
+        values.put(KEY_DEFAULT_NOTIF, semester.getDefaultNotifString());
+        values.put(KEY_ISSET, semester.getIsSetString());
+
+        db.update(TABLE_SEMESTER, values, KEY_ID + " = ?", new String[] {String.valueOf(semester.getID()) });
     }
 
     public int updateSubject(Subject subject) {
@@ -609,15 +758,41 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         return db.update(TABLE_SCHOOL_ACTIVITY, values, KEY_ID + " = ?", new String[] {String.valueOf(sc.getID()) });
     }
 
+    public void updateAlarm(Alarm alarm) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_DAY, alarm.getDay());
+        values.put(KEY_ALARM_TIME, alarm.getTime());
+        values.put(KEY_ALARM_TYPE, alarm.getType());
+
+        db.update(TABLE_ALARM, values, KEY_ID + " = ?", new String[] {String.valueOf(alarm.getId()) });
+        db.close();
+    }
+
     public void removeSubject(String subjectName) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_SUBJECT + " WHERE " + KEY_SUBJECT_NAME + " = '" + subjectName + "'");
+        db.close();
     }
 
     public void removeId(String id,String tableName) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + tableName + " WHERE " + KEY_ID + " = " + id);
+        db.close();
     }
+
+    public void removeAllAlarm() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_ALARM + " WHERE " + KEY_ALARM_TYPE + " = 'alarm'");
+        db.close();
+    }
+
+    public void removeAlarm(Alarm alarm) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_ALARM + " WHERE " + KEY_ID + " = " + alarm.getId());
+    }
+
 
 
 }

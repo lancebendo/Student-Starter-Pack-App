@@ -2,7 +2,9 @@ package lancepogi.mobiledevelopmentproject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Lance on 1/11/2017.
@@ -164,6 +166,18 @@ public class Subject {
             default:
                 return 0;
         }
+    }
+
+    public List<String> totalDay() {
+        List<String> day = new ArrayList<>();
+
+        for (int i = 0; i < 6; i++) {
+            int bit = getDay(totalDay[i][0]);
+            if(bit == 1) {
+                day.add(totalDay[i][0]);
+            }
+        }
+        return day;
     }
 
     public String getTotalDay() {

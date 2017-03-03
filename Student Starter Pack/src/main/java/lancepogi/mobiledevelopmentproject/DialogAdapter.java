@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,7 +53,8 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
     //end activity attributes
 
     //no class attributes
-        Spinner spDays;
+        Button btnDate;
+        EditText etDate;
         //etDesc, btnSubmit
     //end no class attributes
 
@@ -129,7 +132,6 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
         this.cbSaturday = (CheckBox) rootView.findViewById(R.id.cbSaturday);
 
         this.etSubjName = (EditText) rootView.findViewById(R.id.etSubjectName);
-        this.etNoUnits = (EditText) rootView.findViewById(R.id.etSubjUnits);
         this.etStartTime = (EditText) rootView.findViewById(R.id.etDesc);
         this.etEndTime = (EditText) rootView.findViewById(R.id.etEnd);
         this.btnSubmit = (Button) rootView.findViewById(R.id.btnSubmitAdd);
@@ -157,8 +159,10 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
     }
 
     public void initializeNoClass(View rootView) {
-        this.spDays = (Spinner) rootView.findViewById(R.id.spDays);
+        this.etDate = (EditText) rootView.findViewById(R.id.etDate);
         this.etDesc = (EditText) rootView.findViewById(R.id.etDesc);
+        this.btnDate = (Button) rootView.findViewById(R.id.btnDate);
+        this.btnDate.setOnClickListener(this);
         this.btnSubmit = (Button) rootView.findViewById(R.id.btnSubmit);
         this.btnSubmit.setOnClickListener(this);
     }
@@ -212,6 +216,8 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
 
     @Override
     public void onClick(View v) {
+
+        boolean isDone = true;
 
         if (v == this.btnStartTime) {
             String defaultTime = "7:00 am";
@@ -267,12 +273,43 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
                     }
                 }, startDateInt[0], startDateInt[1], startDateInt[2]);
                 dpd.show();
+        } else if (v == this.btnDate) {
+            Calendar c = Calendar.getInstance();
+
+            if (startDateInt[0] == 0) {
+                startDateInt[0] = c.get(Calendar.YEAR);
+                startDateInt[1] = c.get(Calendar.MONTH);
+                startDateInt[2] = c.get(Calendar.DAY_OF_MONTH);
+            }
+            DatePickerDialog dpd = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    startDateInt[0] = year;
+                    startDateInt[1] = month;
+                    startDateInt[2] = dayOfMonth;
+                    etDate.setText(getMonth(startDateInt[1]) + " " + startDateInt[2] + ", " + startDateInt[0]);
+
+                }
+            }, startDateInt[0], startDateInt[1], startDateInt[2]);
+            dpd.show();
         } else if (v == this.btnSubmit) {
+            int doSomething = 0;
             if (this.toDoIndex == 1) {      //add
                 if (isComplete(this.toWhatIndex) == true) {
 
                     if (this.toWhatIndex == 1) {
-                        submitSubject();
+                        try {
+                            if(isValidData() == true) {
+                                submitSubject();
+                                isDone = true;
+                            } else {
+                                isDone = false;
+                                Toast.makeText(getActivity(), "Invalid start and end date!!", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
                     } else if (this.toWhatIndex == 2) {
                         submitAssignment();
                     } else if (this.toWhatIndex == 3) {
@@ -280,21 +317,27 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
                     } else if (this.toWhatIndex == 4) {
                         submitNoClass();
                     }
-                    startActivity(new Intent(getActivity(), StartupActivity.class));
-                    getActivity().finish();
+                    if (isDone == true) {
+                        startActivity(new Intent(getActivity(), StartupActivity.class));
+                        getActivity().finish();
+                    }
                 } else {
                     Toast.makeText(getActivity(), "Please complete all the required fields!", Toast.LENGTH_LONG).show();
                 }
             } else if (this.toDoIndex == 2) {       //delete
                 if (spChoose.getSelectedItemPosition() != 0) {
 
-
-
                     DBHelper dbHelper = new DBHelper(getActivity().getApplicationContext());
                     String tableName = "";
                     if (this.toWhatIndex == 1) {
-                        String selectedItem = spChoose.getSelectedItem().toString();
-                        dbHelper.removeSubject(selectedItem);
+                        if (dbHelper.isLastSubject() == false) {
+                            String selectedItem = spChoose.getSelectedItem().toString();
+                            dbHelper.removeSubject(selectedItem);
+
+                        } else {
+                            isDone = false;
+                            Toast.makeText(getActivity(), "Can't delete the last subject. Please reset the semester instead.", Toast.LENGTH_LONG).show();
+                        }
                     } else if (this.toWhatIndex == 2) {
                         String selectedItem = spChoose.getSelectedItem().toString().substring(0, spChoose.getSelectedItem().toString().indexOf(" "));
                         dbHelper.removeId(selectedItem, "assignment");
@@ -306,16 +349,106 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
                         dbHelper.removeId(selectedItem, "no_class");
                     }
 
-                    startActivity(new Intent(getActivity(), StartupActivity.class));
-                    getActivity().finish();
+                    if (isDone == true) {
+                        startActivity(new Intent(getActivity(), StartupActivity.class));
+                        getActivity().finish();
+                    }
+
                 } else {
+                    doSomething = 1;
                     Toast.makeText(getActivity(), "Please choose an item you want to delete!!", Toast.LENGTH_LONG).show();
                 }
             }
 
+            if(doSomething != 1) {
+                AlarmScheduler alarmScheduler = new AlarmScheduler(getActivity().getApplicationContext());
+                alarmScheduler.cancelAllAlarm();
+                try {
+                    alarmScheduler.updateAlarmSchedule();
+                    DBHelper dbHelper = new DBHelper(getActivity().getApplicationContext());
+                    alarmScheduler.setAllAlarm(dbHelper.getAlarm());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "Please choose an item you want to delete!!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+
         }
 
 
+    }
+
+    private boolean isValidData() throws ParseException {
+
+        DBHelper dbHelper = new DBHelper(getActivity().getApplicationContext());
+        List<Subject> subjectList = dbHelper.getAllSubject();
+        DateFormat startTime = new SimpleDateFormat("hh:mm a");
+        DateFormat endTime = new SimpleDateFormat("hh:mm a");
+
+        startTime.parse(etStartTime.getText().toString());
+        endTime.parse(etEndTime.getText().toString());
+
+        long start = startTime.getCalendar().getTimeInMillis();
+        long end = endTime.getCalendar().getTimeInMillis();
+
+        if(start >= end) {
+            return false;
+        }
+
+        for (Subject subj:subjectList) {
+            if (etSubjName.getText().toString().matches(subj.getSubjName())) {
+                return false;
+            }
+
+            DateFormat loopStartTime = new SimpleDateFormat("HH:mm");
+            DateFormat loopEndTime = new SimpleDateFormat("HH:mm");
+
+            loopStartTime.parse(subj.getStartTime());
+            loopEndTime.parse(subj.getEndTime());
+
+            long loopStart = loopStartTime.getCalendar().getTimeInMillis();
+            long loopEnd = loopEndTime.getCalendar().getTimeInMillis();
+
+
+            for (String dayString:dayArray) {
+                if (getDay(dayString) == 1) {
+                    for (String loopDay:subj.totalDay()) {
+                        if (dayString == loopDay) {
+                            if (start >= loopStart) {
+                                if (start >= loopEnd) {
+                                } else {
+                                    return false;
+                                }
+                            } else if (end <= loopStart) {
+                                if (end >= loopEnd) {
+
+                                } else if (loopStart >= start) {
+                                    if(loopStart >= end) {
+
+                                    } else {
+                                        return false;
+                                    }
+                                } else if (loopEnd <= end) {
+                                    if (loopEnd >= end) {
+
+                                    }   else {
+                                        return false;
+                                    }
+                                }
+
+                                else {
+                                    return false;
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     private boolean isComplete(int toWhatIndex) {
@@ -330,9 +463,11 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
                 return false;
             } else if (units.matches("")) {
                 return false;
-            } else if (start.matches("")) {
+            } else if (start.matches("start time")) {
                 return false;
-            } else if (end.matches("")) {
+            } else if (end.matches("end time")) {
+                return false;
+            } else if (isNoDay() == true) {
                 return false;
             }
         } else if (toWhatIndex == 2) {
@@ -344,7 +479,7 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
                 return false;
             } else if (desc.matches("")) {
                 return false;
-            } else if (deadline.matches("")) {
+            } else if (deadline.matches("Deadline Time")) {
                 return false;
             }
         } else if (toWhatIndex == 3) {
@@ -356,19 +491,28 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
                 return false;
             } else if (desc.matches("")) {
                 return false;
-            } else if (deadline.matches("")) {
+            } else if (deadline.matches("Deadline Time")) {
                 return false;
             }
         } else if (toWhatIndex == 4) {
-            String desc;
+            String desc, date;
             desc = etDesc.getText().toString();
-            if (spDays.getSelectedItemPosition() == 0 || desc.matches("")) {
+            date = etDate.getText().toString();
+            if (date.matches("No Class Date") || desc.matches("")) {
                 return false;
             }
         }
 
         return true;
     }
+
+    private boolean isNoDay() {
+        if (cbMonday.isChecked() == false && cbTuesday.isChecked() == false && cbWednesday.isChecked() == false && cbThursday.isChecked() == false && cbFriday.isChecked() == false && cbSaturday.isChecked() == false) {
+            return true;
+        }
+        return false;
+    }
+
 
     private void submitSubject() {
         Subject newSubject = new Subject();
@@ -409,7 +553,7 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
 
     private void submitNoClass() {
         NoClass newNoClass = new NoClass();
-        newNoClass.setDay(this.spDays.getSelectedItem().toString());
+        newNoClass.setDay(this.etDate.getText().toString());
         newNoClass.setDesc(this.etDesc.getText().toString());
 
         DBHelper dbHelper = new DBHelper(getActivity().getApplicationContext());

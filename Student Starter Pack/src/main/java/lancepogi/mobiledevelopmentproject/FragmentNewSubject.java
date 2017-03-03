@@ -14,7 +14,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TimePicker;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -25,7 +28,7 @@ import java.util.List;
 public class FragmentNewSubject extends DialogFragment implements OnClickListener {
 
     Button btnStart, btnEnd;
-    EditText etSubjName, etUnits, etStart, etEnd;
+    EditText etSubjName, etStart, etEnd;
     CheckBox cbMonday, cbTuesday, cbWednesday, cbThursday, cbFriday, cbSaturday;
 
     SubjectListAdapter newAdapter;
@@ -58,20 +61,32 @@ public class FragmentNewSubject extends DialogFragment implements OnClickListene
         this.cbSaturday = (CheckBox) rootView.findViewById(R.id.cbSaturday);
 
         this.etSubjName = (EditText) rootView.findViewById(R.id.etSubjectName);
-        this.etUnits = (EditText) rootView.findViewById(R.id.etSubjUnits);
+
         this.etStart = (EditText) rootView.findViewById(R.id.etDesc);
         this.etEnd = (EditText) rootView.findViewById(R.id.etEnd);
 
         etSubjName.setTextColor(Color.GRAY);
-        etUnits.setTextColor(Color.GRAY);
+
 
         Button submit = (Button) rootView.findViewById(R.id.btnSubmitAdd);
         submit.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                submitSubject();
-                dismiss();
+                if (isComplete() == true) {
+                    try {
+                        if (isValidData() == true) {
+                            submitSubject();
+                            dismiss();
+                        } else {
+                            Toast.makeText(getActivity(), "Conflict on sched or invalid time!", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Please fill up all the required fields!!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -80,6 +95,90 @@ public class FragmentNewSubject extends DialogFragment implements OnClickListene
 
         return rootView;
     }
+
+    private boolean isValidData() throws ParseException {
+
+        DateFormat startTime = new SimpleDateFormat("hh:mm a");
+        DateFormat endTime = new SimpleDateFormat("hh:mm a");
+
+        startTime.parse(etStart.getText().toString());
+        endTime.parse(etEnd.getText().toString());
+
+        long start = startTime.getCalendar().getTimeInMillis();
+        long end = endTime.getCalendar().getTimeInMillis();
+
+        if(start >= end) {
+            return false;
+        }
+
+        for (Subject subj:subjectList) {
+            if (etSubjName.getText().toString().matches(subj.getSubjName())) {
+                return false;
+            }
+
+            DateFormat loopStartTime = new SimpleDateFormat("HH:mm");
+            DateFormat loopEndTime = new SimpleDateFormat("HH:mm");
+            Toast.makeText(getActivity(), String.valueOf(subj.getStartTime()), Toast.LENGTH_LONG).show();
+            loopStartTime.parse(subj.getStartTime());
+            loopEndTime.parse(subj.getEndTime());
+
+            long loopStart = loopStartTime.getCalendar().getTimeInMillis();
+            long loopEnd = loopEndTime.getCalendar().getTimeInMillis();
+
+
+            for (String dayString:dayArray) {
+                if (getDay(dayString) == 1) {
+                    for (String loopDay:subj.totalDay()) {
+                        if (dayString == loopDay) {
+                            if (start >= loopStart) {
+                                if (start >= loopEnd) {
+                                } else {
+                                    return false;
+                                }
+                            } else if (end <= loopStart) {
+                                if (end >= loopEnd) {
+
+                                } else {
+                                    return false;
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isComplete() {
+        String subjname, start, end;
+        subjname = etSubjName.getText().toString();
+
+        start = etStart.getText().toString();
+        end = etEnd.getText().toString();
+        if (subjname.matches("")) {
+            return false;
+        } else if (start.matches("start time")) {
+            return false;
+        } else if (end.matches("end time")) {
+            return false;
+        } else if (isNoDay() == true) {
+            return false;
+        }
+
+
+        return true;
+    }
+
+    private boolean isNoDay() {
+        if (cbMonday.isChecked() == false && cbTuesday.isChecked() == false && cbWednesday.isChecked() == false && cbThursday.isChecked() == false && cbFriday.isChecked() == false && cbSaturday.isChecked() == false) {
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -245,7 +344,6 @@ public class FragmentNewSubject extends DialogFragment implements OnClickListene
         newSubject.setSubjName(etSubjName.getText().toString());
         newSubject.setStartTime(getTime(startTime[0], startTime[1]));
         newSubject.setEndTime(getTime(endTime[0], endTime[1]));
-        newSubject.setUnits(etUnits.getText().toString());
 
         for (String dayString : dayArray) {
             newSubject.setDay(dayString, getDay(dayString));

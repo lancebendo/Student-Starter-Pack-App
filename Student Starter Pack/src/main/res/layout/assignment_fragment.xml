@@ -21,11 +21,12 @@
     <EditText
         android:layout_width="248dp"
         android:layout_height="146dp"
-        android:inputType="textMultiLine"
+        android:inputType="textCapSentences"
         android:ems="10"
         android:layout_x="11dp"
         android:layout_y="176dp"
         android:id="@+id/etDesc"
+
         android:hint="Enter Assignment Description here" />
 
     <Button
@@ -43,7 +44,7 @@
     <EditText
         android:layout_width="172dp"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="textCapSentences"
         android:ems="10"
         android:layout_x="119dp"
         android:layout_y="333dp"
@@ -70,14 +71,6 @@
         android:layout_x="72dp"
         android:layout_y="43dp" />
 
-    <Button
-        android:text="Submit"
-        android:layout_width="132dp"
-        android:layout_height="59dp"
-        android:layout_x="27dp"
-        android:layout_y="412dp"
-        android:id="@+id/btnSubmit" />
-
     <EditText
         android:layout_width="263dp"
         android:layout_height="wrap_content"
@@ -93,6 +86,14 @@
         android:layout_marginTop="20dp"
         android:layout_x="14dp"
         android:layout_y="125dp" />
+
+    <Button
+        android:text="Submit"
+        android:layout_width="132dp"
+        android:layout_height="59dp"
+        android:layout_x="89dp"
+        android:layout_y="410dp"
+        android:id="@+id/btnSubmit" />
 
 
 </AbsoluteLayout>

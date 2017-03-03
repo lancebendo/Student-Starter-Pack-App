@@ -12,6 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import java.text.ParseException;
 
 
 /**
@@ -22,15 +26,47 @@ public class FragmentSettings extends DialogFragment {
 
     Button btnApply, btnCancel, btnReset;
 
+    Spinner spHours, spSem;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.settings_fragment, container, false);
 
+        spHours = (Spinner) rootView.findViewById(R.id.spHours);
+        spSem = (Spinner) rootView.findViewById(R.id.spSem);
+
         btnApply = (Button) rootView.findViewById(R.id.btnApply);
         btnCancel = (Button) rootView.findViewById(R.id.btnCancel);
         btnReset = (Button) rootView.findViewById(R.id.btnReset);
+
+        btnApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (spHours.getSelectedItemPosition() != 0 && spSem.getSelectedItemPosition() != 0) {
+                    final int subtractHours = spHours.getSelectedItemPosition();
+                    DBHelper dbHelper = new DBHelper(getActivity());
+                    Semester newSemester = dbHelper.getSemester();
+                    newSemester.setDefaultAlarm(String.valueOf(subtractHours));
+                    newSemester.setSemester(spSem.getSelectedItem().toString());
+                    try {
+                        dbHelper.updateSemesterAlarm(newSemester);
+                        AlarmScheduler newAlarmScheduler = new AlarmScheduler(getActivity());
+                        newAlarmScheduler.cancelAllAlarm();
+                        newAlarmScheduler.updateAlarmSchedule();
+                        newAlarmScheduler.setAllAlarm(dbHelper.getAlarm());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    startActivity(new Intent(getActivity(), StartupActivity.class));
+                    getActivity().finish();
+                } else {
+                    Toast.makeText(getActivity(), "Please choose on the spinner before applying changes!", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +86,8 @@ public class FragmentSettings extends DialogFragment {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 DBHelper dbHelper = new DBHelper(getActivity());
+                                AlarmScheduler newAlarmScheduler = new AlarmScheduler(getActivity());
+                                newAlarmScheduler.cancelAllAlarm();
                                 dbHelper.resetSemester();
                                 startActivity(new Intent(getActivity(), StartupActivity.class));
                                 getActivity().finish();

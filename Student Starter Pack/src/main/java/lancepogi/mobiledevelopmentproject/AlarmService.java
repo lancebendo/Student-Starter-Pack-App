@@ -44,12 +44,17 @@ public class AlarmService extends Service {
         Calendar c = Calendar.getInstance();
         String dayToday = this.dayArray[c.get(Calendar.DAY_OF_WEEK) - 1];
 
-        if (dbHelper.isNoClass(dayToday) == true) {
+        if (dbHelper.isNoClassToday() == true) {
+            AlarmScheduler alarmScheduler = new AlarmScheduler(getApplicationContext());
+            try {
+                alarmScheduler.setNextWeekAlarm(dayToday);
+            } catch (ParseException e) {
+                Toast.makeText(this.getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
+
+            }
             return START_NOT_STICKY;
         }
 
-
-        Toast.makeText(this.getApplicationContext(), "AYTO NA!" + dayToday, Toast.LENGTH_LONG).show();
         Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if(alarmUri == null) {
             alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -76,7 +81,7 @@ public class AlarmService extends Service {
         notif.notify(1, nbuilder.build());
 
 
-        /*eto yung loop
+
         AlarmScheduler alarmScheduler = new AlarmScheduler(getApplicationContext());
 
 
@@ -89,20 +94,6 @@ public class AlarmService extends Service {
 
 
 
-        Intent sampleIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
-        PendingIntent newPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, sampleIntent, 0);
-
-        Calendar now = Calendar.getInstance();
-        //long time = now.getTimeInMillis() + 60000;
-        now.setTimeInMillis(now.getTimeInMillis() + 5000);
-        //now.set(Calendar.SECOND, 0);
-
-        this.alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), newPendingIntent);
-        //this.alarmIsSet = true;
-        //this.sample.setText(now.getTime().toString());
-        Toast.makeText(getApplicationContext(), "Alarm is set", Toast.LENGTH_LONG).show();
-*/
         return START_NOT_STICKY;
     }
 

@@ -12,8 +12,12 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +38,8 @@ public class NewSemesterActivity extends Activity implements View.OnClickListene
 
     EditText etName;
 
+    Spinner spSemester;
+
     private int[] startDateInt = {0,0,0}; //first index is year, second is month, third is day
     private int[] endDateInt = {0,0,0}; //first index is year, second is month, third is day
 
@@ -51,7 +57,7 @@ public class NewSemesterActivity extends Activity implements View.OnClickListene
         lv.invalidateViews();
 
         TextView headerView = new TextView(this);
-        headerView.setText("Subject Name          Unit               Day");
+        headerView.setText("Subject Name                   Day");
         lv.addHeaderView(headerView);
         lv.setAdapter(this.subjAdapter);
 
@@ -63,6 +69,8 @@ public class NewSemesterActivity extends Activity implements View.OnClickListene
         this.tvStartDate = (TextView) findViewById(R.id.tvStartDate);
         this.tvEndDate = (TextView) findViewById(R.id.tvEndDate);
 
+        this.spSemester = (Spinner) findViewById(R.id.spSemester);
+
         btnStartDate.setOnClickListener(this);
         btnEndDate.setOnClickListener(this);
 
@@ -70,17 +78,45 @@ public class NewSemesterActivity extends Activity implements View.OnClickListene
 
 
     public  void submitSem(View view) throws ParseException {
-        Intent intent = new Intent(this, MainActivity.class);
-        List<Subject> newList = subjAdapter.subjectList;
-        for (Subject subject:newList) {
-            dbHelper.newSubject(subject);
+        if (isComplete() == true && spSemester.getSelectedItemPosition() != 0) {
+            if (isValidDate() == true) {
+
+            Intent intent = new Intent(this, MainActivity.class);
+            List<Subject> newList = subjAdapter.subjectList;
+            for (Subject subject:newList) {
+                dbHelper.newSubject(subject);
+            }
+
+            dbHelper.newSemester(setSemester());
+            AlarmScheduler alarmScheduler = new AlarmScheduler(this);
+            alarmScheduler.setAlarmSchedule();
+            alarmScheduler.setAllAlarm(dbHelper.getAlarm());
+            startActivity(intent);
+
+            } else {
+                Toast.makeText(this, "Invalid start and end date!!", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "Please fill up all the required fields!!", Toast.LENGTH_LONG).show();
         }
 
-        dbHelper.newSemester(setSemester());
-        AlarmScheduler alarmScheduler = new AlarmScheduler(this);
-        alarmScheduler.setAlarmSchedule();
-        alarmScheduler.setAllAlarm(dbHelper.getAlarm());
-        startActivity(intent);
+    }
+
+    private boolean isValidDate() throws ParseException {
+        DateFormat startFormat = new SimpleDateFormat("MMMM dd, yyyy");
+        DateFormat endFormat = new SimpleDateFormat("MMMM dd, yyyy");
+
+        startFormat.parse(tvStartDate.getText().toString());
+        endFormat.parse(tvEndDate.getText().toString());
+
+        long start = startFormat.getCalendar().getTimeInMillis();
+        long end = endFormat.getCalendar().getTimeInMillis();
+
+        if (start >= end) {
+            return false;
+        }
+
+        return true;
     }
 
     public void newSubject(View view) {
@@ -93,15 +129,34 @@ public class NewSemesterActivity extends Activity implements View.OnClickListene
 
     }
 
+    private boolean isComplete() {
+        String name, start, end;
+        name = etName.getText().toString();
+        start = tvStartDate.getText().toString();
+        end = tvEndDate.getText().toString();
+        if (name.matches("")) {
+            return false;
+        } else if (start.matches("MM/dd/yyyy")) {
+            return false;
+        } else if (end.matches("MM/dd/yyyy")) {
+            return false;
+        } else if (subjAdapter.getCount() == 0) {
+            return false;
+        }
+        return true;
+    }
+
 
 
     public Semester setSemester() {
 
         String startDateString = startDateInt[1] + "/" + startDateInt[2] + "/" + startDateInt[0];
         String endDateString = endDateInt[1] + "/" + endDateInt[2] + "/" + endDateInt[0];
+        String semesterString = spSemester.getSelectedItem().toString();
 
         Semester sem = new Semester();
 
+        sem.setSemester(semesterString);
         sem.setStudName(etName.getText().toString());
         sem.setStartDate(startDateString);
         sem.setEndDate(endDateString);

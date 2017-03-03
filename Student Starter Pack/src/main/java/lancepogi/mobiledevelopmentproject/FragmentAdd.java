@@ -30,7 +30,7 @@ public class FragmentAdd extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.add_fragment,container,false);
 
-        Toast.makeText(getActivity(), "sa create", Toast.LENGTH_LONG).show();
+
 
         this.spTodo = (Spinner) rootView.findViewById(R.id.spTodo);
         this.spTowhat = (Spinner) rootView.findViewById(R.id.spTowhat);

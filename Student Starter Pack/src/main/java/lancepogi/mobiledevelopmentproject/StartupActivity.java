@@ -17,7 +17,7 @@ public class StartupActivity extends AppCompatActivity {
                 AlarmService.ringtone.stop();
             }
         }
-
+        //dbHelper.resetSemester();
         if (dbHelper.isSemesterExisting() == true) {
             startActivity(new Intent(this, MainActivity.class));
         } else {

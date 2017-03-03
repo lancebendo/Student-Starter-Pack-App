@@ -16,6 +16,7 @@ public class Semester implements Serializable {
     private String studName;
     private String startDate;
     private String endDate;
+    private String semester;
     private String defaultAlarm;
     private String defaultNotif;
     private int isSet;
@@ -26,6 +27,9 @@ public class Semester implements Serializable {
 
     }
 
+    public void setId(String id) {
+        this.id = Integer.parseInt(id);
+    }
 
     public void setStudName(String studName) {
         this.studName = studName;
@@ -37,6 +41,10 @@ public class Semester implements Serializable {
 
     public void setEndDate(String date) {
         this.endDate = date;
+    }
+
+    public void setSemester(String sem) {
+        this.semester = sem;
     }
 
     public void setDefaultAlarm(String alarm) {
@@ -73,6 +81,21 @@ public class Semester implements Serializable {
     public Date getEndDate() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         return dateFormat.parse(this.endDate);
+    }
+
+    public String getSemester() {
+        return this.semester;
+    }
+
+    public String getSemesterComplete() {
+        if (this.semester.matches("1st")) {
+            return "First Semester";
+        } else if (this.semester.matches("2nd")) {
+            return "Second Semester";
+        } else if (this.semester.matches("Summer")) {
+            return "Summer Period";
+        }
+        return "";
     }
 
     public String getEndDateString() {

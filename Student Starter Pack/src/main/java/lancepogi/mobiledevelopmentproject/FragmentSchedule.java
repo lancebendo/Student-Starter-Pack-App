@@ -5,11 +5,13 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -43,7 +45,8 @@ public class FragmentSchedule extends Fragment {
 
 
         TableLayout sample = (TableLayout) rootView.findViewById(R.id.sampleTable);
-        TableLayout.LayoutParams sampleParams = new TableLayout.LayoutParams();
+        TableLayout.LayoutParams sampleParams = new TableLayout.LayoutParams(TabLayout.LayoutParams.WRAP_CONTENT, TabLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+
 
         TableRow.LayoutParams spaceParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT,1.0f);
         spaceParams.height = 130;
@@ -56,12 +59,14 @@ public class FragmentSchedule extends Fragment {
         subjHeaderParams.setMargins(2,2,2,2);
         subjHeaderParams.weight = 1;
         subjHeaderParams.height = 100;
+        subjHeaderParams.width = 100;
 
 
         TableRow.LayoutParams tableParams = new TableRow.LayoutParams();
         tableParams.setMargins(2,2,2,2);
-        tableParams.weight = 1;
-        tableParams.height = 50;
+        tableParams.weight = 100;
+
+
 
 
 
@@ -71,7 +76,6 @@ public class FragmentSchedule extends Fragment {
 
         TableRow headerRowSubject = new TableRow(getActivity());
         headerRowSubject.addView(newTextView("Subject"), subjHeaderParams);
-        headerRowSubject.addView(newTextView("Units"), subjHeaderParams);
         headerRowSubject.addView(newTextView("Time"), subjHeaderParams);
         headerRowSubject.addView(newTextView("Day"), subjHeaderParams);
         sample.addView(headerRowSubject, sampleParams);
@@ -80,7 +84,6 @@ public class FragmentSchedule extends Fragment {
         for (Subject subj:subjectList) {
             TableRow sampleRow = new TableRow(getActivity());
             sampleRow.addView(newTextView(subj.getSubjName()), tableParams);
-            sampleRow.addView(newTextView(subj.getUnits()), tableParams);
             sampleRow.addView(newTextView(subj.getStartTime() + " - " + subj.getEndTime()), tableParams);
             sampleRow.addView(newTextView(subj.getTotalDay()), tableParams);
             sample.addView(sampleRow, sampleParams);
@@ -196,7 +199,7 @@ public class FragmentSchedule extends Fragment {
         for (Alarm alarm:alarmList) {
             TableRow sampleRow = new TableRow(getActivity());
             sampleRow.addView(newTextView(alarm.getDay()), tableParams);
-            sampleRow.addView(newTextView(alarm.getTime()), tableParams);
+            sampleRow.addView(newTextView(alarm.getTimeComplete()), tableParams);
             sample.addView(sampleRow, sampleParams);
         }
 

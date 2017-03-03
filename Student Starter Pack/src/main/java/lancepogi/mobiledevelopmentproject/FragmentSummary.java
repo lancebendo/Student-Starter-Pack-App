@@ -22,43 +22,19 @@ public class FragmentSummary extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.summary_fragment,container,false);
-        final TextView tv = (TextView) rootView.findViewById(R.id.tvSample);
-        Button btn = (Button) rootView.findViewById(R.id.btnSample);
+        final TextView tvGreeting = (TextView) rootView.findViewById(R.id.tvGreet);
+        final TextView tvSem = (TextView) rootView.findViewById(R.id.tvSem);
         final DBHelper dbHelper = new DBHelper(getActivity());
         Semester sem = dbHelper.getSemester();
-        tv.setText( sem.getDefaultAlarmString());
-
-        /*
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(Integer.parseInt(dbHelper.countSemester()) == 1) {
-                    tv.setText("it is 1!");
-                } else {
-                    tv.setText("h" + dbHelper.countSemester() + "hts this");
-                }
-            }
-        }); */
-
-        GridView gvSample = (GridView) rootView.findViewById(R.id.gvSample);
+        tvGreeting.setText("Hello " + sem.getStudName() + "!");
+        tvSem.setText("This is for " + sem.getSemesterComplete() + ".");
 
 
 
-        List<String> sampleList = new ArrayList<String>();
-        ArrayAdapter<String> aa = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, sampleList);
-
-
-        sampleList.add(String.valueOf(sem.getID()));
-        sampleList.add(sem.getStudName());
-        sampleList.add(sem.getStartDateString());
-        sampleList.add(sem.getEndDateString());
-        sampleList.add(sem.getDefaultAlarmString());
-        sampleList.add(sem.getDefaultNotifString());
-        sampleList.add(String.valueOf(sem.getIsSet()));
 
 
 
-        gvSample.setAdapter(aa);
+
 
 
         return rootView;

@@ -8,13 +8,15 @@
         android:id="@+id/subjectName"
         android:layout_width="5sp"
         android:layout_height="fill_parent"
-        android:layout_weight="1.05" />
+        android:layout_weight="1.05"
+        android:textAlignment="center" />
 
     <TextView
-        android:id="@+id/subjectUnit"
+        android:id="@+id/subjectDay"
         android:layout_width="5sp"
         android:layout_height="fill_parent"
-        android:layout_weight="1.06" />
+        android:layout_weight="1.05"
+        android:textAlignment="center" />
 
     <ImageButton
         android:id="@+id/removeSubject"

@@ -5,28 +5,6 @@
     android:focusableInTouchMode="true">
 
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_x="15dp"
-        android:layout_y="89dp"
-        android:id="@+id/etSubjUnits"
-        android:textColor="?android:attr/textColorSecondary"
-        android:hint="No. of Units" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_x="12dp"
-        android:layout_y="23dp"
-        android:id="@+id/etSubjectName"
-        android:textColor="?android:attr/textColorSecondary"
-        android:hint="Subject Name" />
-
     <Button
         android:text="Start Time"
         android:layout_width="wrap_content"
@@ -126,5 +104,16 @@
         android:clickable="false"
         android:cursorVisible="true"
         android:focusable="false"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textCapSentences"
+        android:ems="10"
+        android:layout_x="22dp"
+        android:layout_y="63dp"
+        android:id="@+id/etSubjectName"
+        android:textColor="?android:attr/textColorSecondary"
+        android:hint="Subject Name" />
 
 </AbsoluteLayout>
