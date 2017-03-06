@@ -325,7 +325,7 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
                             Toast.makeText(getActivity(), "Invalid date!", Toast.LENGTH_LONG).show();
                         }
                     } else if (this.toWhatIndex == 4) {
-                        if (isValidDeadline(etDeadline.getText().toString()) == true) {
+                        if (isValidDeadline(etDate.getText().toString()) == true) {
                             submitNoClass();
                         } else {
                             isDone = false;
