@@ -529,6 +529,40 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         return assignmentList;
     }
 
+    public List<Assignment> getUpcomingAssignment() {
+        List<Assignment> assignmentList = new ArrayList<Assignment>();
+        String selectQuery = "SELECT * FROM " + TABLE_ASSIGNMENT;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        Calendar c = Calendar.getInstance();
+
+        if(cursor.moveToFirst()) {
+            do {
+                DateFormat ddFormat = new SimpleDateFormat("MMMM dd, yyyy");
+                try {
+                    ddFormat.parse(cursor.getString(4));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                if (ddFormat.getCalendar().getTimeInMillis() > c.getTimeInMillis()) {
+                    Assignment assign = new Assignment();
+                    assign.setId(Integer.parseInt(cursor.getString(0)));
+                    assign.setSubj_name(cursor.getString(1));
+                    assign.setDesc(cursor.getString(2));
+                    assign.setIsDone(Integer.parseInt(cursor.getString(3)));
+                    assign.setDeadline(cursor.getString(4));
+                    assignmentList.add(assign);
+                }
+
+            } while (cursor.moveToNext());
+        }
+
+        return assignmentList;
+    }
+
     public List<SchoolActivity> getAllActivity() {
         List<SchoolActivity> schoolActivityList = new ArrayList<SchoolActivity>();
         String selectQuery = "SELECT * FROM " + TABLE_SCHOOL_ACTIVITY;
@@ -551,6 +585,38 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
         return schoolActivityList;
     }
 
+    public List<SchoolActivity> getUpcomingActivity() {
+        List<SchoolActivity> schoolActivityList = new ArrayList<SchoolActivity>();
+        String selectQuery = "SELECT * FROM " + TABLE_SCHOOL_ACTIVITY;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Calendar c = Calendar.getInstance();
+
+        if(cursor.moveToFirst()) {
+            do {
+                DateFormat ddFormat = new SimpleDateFormat("MMMM dd, yyyy");
+                try {
+                    ddFormat.parse(cursor.getString(4));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                if (ddFormat.getCalendar().getTimeInMillis() > c.getTimeInMillis()) {
+                    SchoolActivity sc = new SchoolActivity();
+                    sc.setId(Integer.parseInt(cursor.getString(0)));
+                    sc.setAct_name(cursor.getString(1));
+                    sc.setDesc(cursor.getString(2));
+                    sc.setIsDone(Integer.parseInt(cursor.getString(3)));
+                    sc.setDeadline(cursor.getString(4));
+                    schoolActivityList.add(sc);
+                }
+            } while(cursor.moveToNext());
+        }
+
+        return schoolActivityList;
+    }
+
     public List<NoClass> getNoClass() {
         List<NoClass> noClassList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NO_CLASS;
@@ -565,6 +631,35 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
                 noClass.setDay(cursor.getString(1));
                 noClass.setDesc(cursor.getString(2));
                 noClassList.add(noClass);
+            } while(cursor.moveToNext());
+        }
+
+        return noClassList;
+    }
+
+    public List<NoClass> getUpcomingNoClass() {
+        List<NoClass> noClassList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_NO_CLASS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Calendar c = Calendar.getInstance();
+
+        if(cursor.moveToFirst()) {
+            do {
+                DateFormat ddFormat = new SimpleDateFormat("MMMM dd, yyyy");
+                try {
+                    ddFormat.parse(cursor.getString(1));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                if (ddFormat.getCalendar().getTimeInMillis() > c.getTimeInMillis()) {
+                    NoClass noClass = new NoClass();
+                    noClass.setId(Integer.parseInt(cursor.getString(0)));
+                    noClass.setDay(cursor.getString(1));
+                    noClass.setDesc(cursor.getString(2));
+                    noClassList.add(noClass);
+                }
             } while(cursor.moveToNext());
         }
 

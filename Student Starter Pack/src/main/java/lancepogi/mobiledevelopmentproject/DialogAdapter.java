@@ -39,7 +39,7 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
     //end common attributes
 
     //subject attributes
-    EditText etNoUnits, etStartTime, etEndTime;
+    EditText etStartTime, etEndTime;
     Button btnStartTime, btnEndTime;
     CheckBox cbMonday, cbTuesday, cbWednesday, cbThursday, cbFriday, cbSaturday;
     //end subject attributes
@@ -311,11 +311,26 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
                         }
 
                     } else if (this.toWhatIndex == 2) {
-                        submitAssignment();
+                        if (isValidDeadline(etDeadline.getText().toString()) == true) {
+                            submitAssignment();
+                        } else {
+                            isDone = false;
+                            Toast.makeText(getActivity(), "Invalid date!", Toast.LENGTH_LONG).show();
+                        }
                     } else if (this.toWhatIndex == 3) {
-                        submitActivity();
+                        if (isValidDeadline(etDeadline.getText().toString()) == true) {
+                            submitActivity();
+                        } else {
+                            isDone = false;
+                            Toast.makeText(getActivity(), "Invalid date!", Toast.LENGTH_LONG).show();
+                        }
                     } else if (this.toWhatIndex == 4) {
-                        submitNoClass();
+                        if (isValidDeadline(etDeadline.getText().toString()) == true) {
+                            submitNoClass();
+                        } else {
+                            isDone = false;
+                            Toast.makeText(getActivity(), "Invalid date!", Toast.LENGTH_LONG).show();
+                        }
                     }
                     if (isDone == true) {
                         startActivity(new Intent(getActivity(), StartupActivity.class));
@@ -377,6 +392,25 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
         }
 
 
+    }
+
+    private boolean isValidDeadline(String date) {
+        DateFormat endFormat = new SimpleDateFormat("MMMM dd, yyyy");
+        try {
+            endFormat.parse(date);
+            Calendar c = Calendar.getInstance();
+            Calendar end = endFormat.getCalendar();
+            if (c.getTimeInMillis() < end.getTimeInMillis()) {
+                return true;
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return false;
     }
 
     private boolean isValidData() throws ParseException {
@@ -454,14 +488,11 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
     private boolean isComplete(int toWhatIndex) {
 
         if (toWhatIndex == 1) {
-            String subjname, units, start, end;
+            String subjname, start, end;
             subjname = etSubjName.getText().toString();
-            units = etNoUnits.getText().toString().trim();
             start = etStartTime.getText().toString();
             end = etEndTime.getText().toString();
             if (subjname.matches("")) {
-                return false;
-            } else if (units.matches("")) {
                 return false;
             } else if (start.matches("start time")) {
                 return false;
@@ -519,7 +550,6 @@ public class DialogAdapter extends DialogFragment implements OnClickListener {
         newSubject.setSubjName(etSubjName.getText().toString());
         newSubject.setStartTime(getTime(startTime[0], startTime[1]));
         newSubject.setEndTime(getTime(endTime[0], endTime[1]));
-        newSubject.setUnits(this.etNoUnits.getText().toString());
 
         for (String dayString : dayArray) {
             newSubject.setDay(dayString, getDay(dayString));

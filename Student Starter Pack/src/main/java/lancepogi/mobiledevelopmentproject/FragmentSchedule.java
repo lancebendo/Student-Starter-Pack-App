@@ -102,9 +102,7 @@ public class FragmentSchedule extends Fragment {
             sample.addView(headerAssignment, sampleParams);
 
             TableRow headerRowAssignment = new TableRow(getActivity());
-            headerRowAssignment.addView(newTextView("#"), subjHeaderParams);
             headerRowAssignment.addView(newTextView("Assignment name"), subjHeaderParams);
-            headerRowAssignment.addView(newTextView("Description"), subjHeaderParams);
             headerRowAssignment.addView(newTextView("Deadline"), subjHeaderParams);
             sample.addView(headerRowAssignment, sampleParams);
 
@@ -112,9 +110,7 @@ public class FragmentSchedule extends Fragment {
             List<Assignment> assignmentList = dbHelper.getAllAssignment();
             for (Assignment assign:assignmentList) {
                 TableRow sampleRow = new TableRow(getActivity());
-                sampleRow.addView(newTextView(String.valueOf(assign.getID())), tableParams);
                 sampleRow.addView(newTextView(assign.getSubj_name()), tableParams);
-                sampleRow.addView(newTextView(assign.getDesc()), tableParams);
                 sampleRow.addView(newTextView(assign.getDeadline()), tableParams);
                 sample.addView(sampleRow, sampleParams);
             }
@@ -134,9 +130,7 @@ public class FragmentSchedule extends Fragment {
             sample.addView(headerActivity, sampleParams);
 
             TableRow headerRowActivity = new TableRow(getActivity());
-            headerRowActivity.addView(newTextView("#"), subjHeaderParams);
             headerRowActivity.addView(newTextView("Activity"), subjHeaderParams);
-            headerRowActivity.addView(newTextView("Description"), subjHeaderParams);
             headerRowActivity.addView(newTextView("Deadline"), subjHeaderParams);
             sample.addView(headerRowActivity, sampleParams);
 
@@ -144,9 +138,7 @@ public class FragmentSchedule extends Fragment {
             List<SchoolActivity> schoolActivityList = dbHelper.getAllActivity();
             for (SchoolActivity activity : schoolActivityList) {
                 TableRow sampleRow = new TableRow(getActivity());
-                sampleRow.addView(newTextView(String.valueOf(activity.getID())), tableParams);
                 sampleRow.addView(newTextView(activity.getAct_name()), tableParams);
-                sampleRow.addView(newTextView(activity.getDesc()), tableParams);
                 sampleRow.addView(newTextView(activity.getDeadline()), tableParams);
                 sample.addView(sampleRow, sampleParams);
             }
@@ -165,7 +157,6 @@ public class FragmentSchedule extends Fragment {
             sample.addView(headerNoClass, sampleParams);
 
             TableRow headerRowNoclass = new TableRow(getActivity());
-            headerRowNoclass.addView(newTextView("#"), subjHeaderParams);
             headerRowNoclass.addView(newTextView("Day"), subjHeaderParams);
             headerRowNoclass.addView(newTextView("Description"), subjHeaderParams);
             sample.addView(headerRowNoclass , sampleParams);
@@ -174,7 +165,6 @@ public class FragmentSchedule extends Fragment {
             List<NoClass> noClassList = dbHelper.getNoClass();
             for (NoClass noClass:noClassList) {
                 TableRow sampleRow = new TableRow(getActivity());
-                sampleRow.addView(newTextView(String.valueOf(noClass.getId())), tableParams);
                 sampleRow.addView(newTextView(noClass.getDay()), tableParams);
                 sampleRow.addView(newTextView(noClass.getDesc()), tableParams);
                 sample.addView(sampleRow, sampleParams);

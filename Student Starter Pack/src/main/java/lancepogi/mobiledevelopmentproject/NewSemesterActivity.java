@@ -116,6 +116,13 @@ public class NewSemesterActivity extends Activity implements View.OnClickListene
             return false;
         }
 
+        Calendar c = Calendar.getInstance();
+
+        if (end <= c.getTimeInMillis()) {
+            return false;
+        }
+
+
         return true;
     }
 
