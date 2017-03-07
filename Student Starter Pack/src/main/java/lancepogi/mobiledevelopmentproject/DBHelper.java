@@ -767,17 +767,7 @@ public class DBHelper extends SQLiteOpenHelper implements Serializable {
                 return false;
             }
         }
-
-
-        String selectQuery = "SELECT * FROM " + TABLE_NO_CLASS;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        cursor.moveToFirst();
-        if (Integer.parseInt(cursor.getString(0)) == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return false;
     }
 
 
