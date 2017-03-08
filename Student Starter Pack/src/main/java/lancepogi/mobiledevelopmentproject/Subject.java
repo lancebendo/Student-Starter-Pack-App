@@ -242,6 +242,16 @@ public class Subject {
         return loopString;
     }
 
+    public String getLongStartTime() {
+
+        return "";
+    }
+
+    public String getLongEndTime() {
+
+        return "";
+    }
+
     private String getTime(int hour, int minute) {
         String period, hourString;
         int minuteLength = (int) Math.log10(minute) + 1;
