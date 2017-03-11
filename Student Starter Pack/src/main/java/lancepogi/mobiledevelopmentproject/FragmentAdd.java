@@ -1,6 +1,7 @@
 package lancepogi.mobiledevelopmentproject;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,6 +32,10 @@ public class FragmentAdd extends Fragment {
         final View rootView = inflater.inflate(R.layout.add_fragment,container,false);
 
 
+        // test
+
+
+        //test end
 
         this.spTodo = (Spinner) rootView.findViewById(R.id.spTodo);
         this.spTowhat = (Spinner) rootView.findViewById(R.id.spTowhat);

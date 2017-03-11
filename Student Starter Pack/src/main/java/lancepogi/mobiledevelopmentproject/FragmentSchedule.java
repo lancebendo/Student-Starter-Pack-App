@@ -47,7 +47,6 @@ public class FragmentSchedule extends Fragment {
         TableLayout sample = (TableLayout) rootView.findViewById(R.id.sampleTable);
         TableLayout.LayoutParams sampleParams = new TableLayout.LayoutParams(TabLayout.LayoutParams.WRAP_CONTENT, TabLayout.LayoutParams.WRAP_CONTENT, 1.0f);
 
-
         TableRow.LayoutParams spaceParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT,1.0f);
         spaceParams.height = 130;
 
@@ -67,14 +66,12 @@ public class FragmentSchedule extends Fragment {
         tableParams.weight = 100;
 
 
-
-
-
         TableRow headerSubject = new TableRow(getActivity());
         headerSubject.addView(newTextView("Subject Schedule"), subjHeaderParams);
         sample.addView(headerSubject, sampleParams);
 
         TableRow headerRowSubject = new TableRow(getActivity());
+
         headerRowSubject.addView(newTextView("Subject"), subjHeaderParams);
         headerRowSubject.addView(newTextView("Time"), subjHeaderParams);
         headerRowSubject.addView(newTextView("Day"), subjHeaderParams);
@@ -86,6 +83,7 @@ public class FragmentSchedule extends Fragment {
             sampleRow.addView(newTextView(subj.getSubjName()), tableParams);
             sampleRow.addView(newTextView(subj.getStartTime() + " - " + subj.getEndTime()), tableParams);
             sampleRow.addView(newTextView(subj.getTotalDay()), tableParams);
+
             sample.addView(sampleRow, sampleParams);
         }
 
@@ -110,7 +108,9 @@ public class FragmentSchedule extends Fragment {
             List<Assignment> assignmentList = dbHelper.getAllAssignment();
             for (Assignment assign:assignmentList) {
                 TableRow sampleRow = new TableRow(getActivity());
+
                 sampleRow.addView(newTextView(assign.getSubj_name()), tableParams);
+
                 sampleRow.addView(newTextView(assign.getDeadline()), tableParams);
                 sample.addView(sampleRow, sampleParams);
             }
@@ -204,7 +204,7 @@ public class FragmentSchedule extends Fragment {
         TextView view = new TextView(getActivity());
         view.setText(txt);
         view.setTextColor(Color.BLACK);
-        view.setBackgroundColor(Color.parseColor("#ffcccccc"));
+        view.setBackgroundColor(Color.WHITE);
         view.setGravity(Gravity.CENTER_HORIZONTAL);
 
         return view;

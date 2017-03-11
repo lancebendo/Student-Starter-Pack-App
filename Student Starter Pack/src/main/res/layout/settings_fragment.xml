@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+
+    android:background="@drawable/newbg"
+    >
 
     <TextView
         android:text="Hour/s before the first class of the day to trigger the alarm:"
@@ -43,7 +46,8 @@
         android:id="@+id/btnCancel" />
 
     <Spinner
-        android:layout_width="148dp"
+        android:layout_width="match_parent"
+
         android:layout_height="53dp"
         android:layout_x="51dp"
         android:layout_y="112dp"
@@ -67,7 +71,7 @@
         android:layout_y="161dp" />
 
     <Spinner
-        android:layout_width="105dp"
+        android:layout_width="match_parent"
         android:layout_height="41dp"
         android:layout_x="59dp"
         android:layout_y="220dp"
